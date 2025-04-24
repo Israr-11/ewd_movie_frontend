@@ -48,3 +48,6 @@ export interface MoviePageProps {
 
 export type FilterOption = "title" | "genre";
 
+export interface MovieListPageTemplateProps extends BaseMovieListProps {
+  title: string;
+}
