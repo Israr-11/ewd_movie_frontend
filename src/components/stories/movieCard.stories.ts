@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import MovieCard from "../MovieCard";
+import MovieCard from "../movieCard/index";
 import SampleMovie from "./sampleData";
 
 const meta = {
