@@ -9,12 +9,12 @@ import SiteHeader from './components/siteHeader'
 import { QueryClientProvider, QueryClient } from "react-query";
 import { ReactQueryDevtools } from 'react-query/devtools';
 import MoviesContextProvider from "./contexts/moviesContext";
+import { AuthProvider } from "./contexts/authContext"; // Add this
 import AddMovieReviewPage from './pages/addMovieReviewPage';
 import UpcomingMoviesPage from "./pages/upcomingMoviesPage";
-import WatchlistMoviesPage from "./pages/watchlistMoviesPage";
-
-
-
+import LoginPage from "./pages/loginPage";
+import RegisterPage from "./pages/registerPage";
+import ProtectedRoute from "./components/protectedRoutes"; // Add this
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,31 +29,44 @@ const queryClient = new QueryClient({
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/movies/favourites">Favourites</Link>
-        </li>
-
-      </ul>
-      <SiteHeader /> 
-      <MoviesContextProvider>
-      <Routes>
-        <Route path="/reviews/form" element={<AddMovieReviewPage/>} />
-        <Route path="/reviews/:id" element={<MovieReviewPage/>} />
-        <Route path="/movies/favourites" element={<FavouriteMoviesPage />} />
-        <Route path="/movies/upcoming" element={<UpcomingMoviesPage />} />
-        <Route path="/movies/watchlist" element={<WatchlistMoviesPage />} />
-        <Route path="/movies/:id" element={<MoviePage />} />
-        <Route path="/" element={<HomePage />} />
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-      </MoviesContextProvider>
-    </BrowserRouter>
-    <ReactQueryDevtools initialIsOpen={false} />
+      <AuthProvider>
+        <BrowserRouter>
+          <SiteHeader />
+          <MoviesContextProvider>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/" element={<HomePage />} />
+              <Route path="/movies/:id" element={<MoviePage />} />
+              <Route path="/reviews/:id" element={<MovieReviewPage />} />
+              <Route path="/movies/upcoming" element={<UpcomingMoviesPage />} />
+              
+              {/* Protected routes */}
+              <Route 
+                path="/movies/favourites" 
+                element={
+                  <ProtectedRoute>
+                    <FavouriteMoviesPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/reviews/form" 
+                element={
+                  <ProtectedRoute>
+                    <AddMovieReviewPage />
+                  </ProtectedRoute>
+                } 
+              />
+              
+              {/* Fallback route */}
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </MoviesContextProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </BrowserRouter>
+      </AuthProvider>
     </QueryClientProvider>
   );
 };
@@ -63,4 +76,3 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <App />
   </React.StrictMode>,
 )
-

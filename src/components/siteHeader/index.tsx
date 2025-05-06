@@ -1,56 +1,70 @@
-import React, { useState, MouseEvent } from "react";
+import React, { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { useNavigate } from "react-router-dom";
+import { styled } from '@mui/material/styles';
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useAuth } from "../../contexts/authContext";
 
-const styles = {
-    title: {
-      flexGrow: 1,
-    },
-  };
+const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 
-const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
-
-const SiteHeader: React.FC = () => {
-  const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement|null>(null);
+const SiteHeader = () => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const navigate = useNavigate();
+  const { isAuthenticated, logout, userEmail } = useAuth();
 
   const menuOptions = [
     { label: "Home", path: "/" },
-    { label: "Favorites", path: "/movies/favourites" },
     { label: "Upcoming", path: "/movies/upcoming" },
-    { label: "Watchlist", path: "/movies/watchlist" },
+    { label: "Favourite", path: "/movies/favourite" },
   ];
+
+  const authenticatedOptions = [
+    { label: "Favorites", path: "/movies/favourites" },
+  ];
+
+  const allOptions = isAuthenticated 
+    ? [...menuOptions, ...authenticatedOptions] 
+    : menuOptions;
 
   const handleMenuSelect = (pageURL: string) => {
     navigate(pageURL);
+    setAnchorEl(null);
   };
 
-  const handleMenu = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
+  // Create menu items for authentication
+  const authMenuItems = isAuthenticated 
+    ? [<MenuItem key="logout" onClick={handleLogout}>Logout</MenuItem>]
+    : [
+        <MenuItem key="login" onClick={() => handleMenuSelect("/login")}>Login</MenuItem>,
+        <MenuItem key="register" onClick={() => handleMenuSelect("/register")}>Register</MenuItem>
+      ];
+
   return (
     <>
-      <AppBar position="fixed" elevation={0} color="primary">
+      <AppBar position="fixed" color="primary">
         <Toolbar>
-          <Typography variant="h4" sx={styles.title}>
+          <Typography variant="h4" sx={{ flexGrow: 1 }}>
             TMDB Client
-          </Typography>
-          <Typography variant="h6" sx={styles.title}>
-            All you ever wanted to know about Movies!
           </Typography>
           {isMobile ? (
             <>
@@ -79,19 +93,23 @@ const SiteHeader: React.FC = () => {
                 open={open}
                 onClose={() => setAnchorEl(null)}
               >
-                {menuOptions.map((opt) => (
-                  <MenuItem
-                    key={opt.label}
-                    onClick={() => handleMenuSelect(opt.path)}
-                  >
-                    {opt.label}
-                  </MenuItem>
-                ))}
+                {/* Combine all menu items into a single array */}
+                {[
+                  ...allOptions.map((opt) => (
+                    <MenuItem
+                      key={opt.label}
+                      onClick={() => handleMenuSelect(opt.path)}
+                    >
+                      {opt.label}
+                    </MenuItem>
+                  )),
+                  ...authMenuItems
+                ]}
               </Menu>
             </>
           ) : (
             <>
-              {menuOptions.map((opt) => (
+              {allOptions.map((opt) => (
                 <Button
                   key={opt.label}
                   color="inherit"
@@ -100,6 +118,25 @@ const SiteHeader: React.FC = () => {
                   {opt.label}
                 </Button>
               ))}
+              {isAuthenticated ? (
+                <>
+                  <Typography variant="body1" sx={{ mx: 2 }}>
+                    {userEmail}
+                  </Typography>
+                  <Button color="inherit" onClick={handleLogout}>
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button color="inherit" onClick={() => handleMenuSelect("/login")}>
+                    Login
+                  </Button>
+                  <Button color="inherit" onClick={() => handleMenuSelect("/register")}>
+                    Register
+                  </Button>
+                </>
+              )}
             </>
           )}
         </Toolbar>
