@@ -9,7 +9,7 @@ import Spinner from "../components/spinner";
 
 const UpcomingMoviesPage: React.FC = () => {
   const { movies, isLoading, isError, error } = useUpcomingMovies();
-  const { addToFavourites } = useContext(MoviesContext);
+  const { addToWatchlist } = useContext(MoviesContext); // Use addToWatchlist instead of addToFavourites
 
   if (isLoading) {
     return <Spinner />;
@@ -34,9 +34,9 @@ const UpcomingMoviesPage: React.FC = () => {
                   variant="contained" 
                   color="primary"
                   startIcon={<PlaylistAddIcon />}
-                  onClick={() => addToFavourites(movie)}
+                  onClick={() => addToWatchlist(movie)} // Use addToWatchlist instead
                 >
-                  Add to Playlist
+                  Add to Watchlist
                 </Button>
               )} 
             />

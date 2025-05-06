@@ -7,6 +7,7 @@ import CardHeader from "@mui/material/CardHeader";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd"; // Import for watchlist icon
 import CalendarIcon from "@mui/icons-material/CalendarTodayTwoTone";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import Grid from "@mui/material/Grid";
@@ -16,12 +17,15 @@ import { Link } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import { MoviesContext } from "../../contexts/moviesContext";
 
-
 const styles = {
   card: { maxWidth: 345 },
   media: { height: 500 },
   avatar: {
     backgroundColor: "rgb(255, 0, 0)",
+  },
+  watchlistAvatar: { // New style for watchlist avatar
+    backgroundColor: "rgb(255, 0, 0)",
+    marginLeft: 2,
   },
 };
 
@@ -29,29 +33,36 @@ interface MovieCardProps {
   movie: BaseMovieProps;
   action: (m: BaseMovieProps) => React.ReactNode;
 }
-const MovieCard: React.FC<MovieCardProps> = ({movie, action}) => {
- 
-  const { favourites, addToFavourites } = useContext(MoviesContext);//NEW
 
-const isFavourite = favourites.find((id) => id === movie.id)? true : false;//NEW
- 
+const MovieCard: React.FC<MovieCardProps> = ({movie, action}) => {
+  const { favourites, watchlist } = useContext(MoviesContext);
+
+  const isFavourite = favourites.find((id) => id === movie.id) ? true : false;
+  const isWatchlisted = watchlist.find((id) => id === movie.id) ? true : false; // Check if movie is in watchlist
 
   return (
     <Card sx={styles.card}>
-    <CardHeader
-      avatar={
-        isFavourite ? (   //CHANGED
-          <Avatar sx={styles.avatar}>
-            <FavoriteIcon />
-          </Avatar>
-        ) : null
-      }
-      title={
-        <Typography variant="h5" component="p">
-          {movie.title}{" "}
-        </Typography>
-      }
-    />
+      <CardHeader
+        avatar={
+          <>
+            {isFavourite ? (
+              <Avatar sx={styles.avatar}>
+                <FavoriteIcon />
+              </Avatar>
+            ) : null}
+            {isWatchlisted ? (
+              <Avatar sx={styles.watchlistAvatar}>
+                <PlaylistAddIcon />
+              </Avatar>
+            ) : null}
+          </>
+        }
+        title={
+          <Typography variant="h5" component="p">
+            {movie.title}{" "}
+          </Typography>
+        }
+      />
 
       <CardMedia
         sx={styles.media}
@@ -78,14 +89,13 @@ const isFavourite = favourites.find((id) => id === movie.id)? true : false;//NEW
         </Grid>
       </CardContent>
       <CardActions disableSpacing>
-      {action(movie)}
+        {action(movie)}
 
         <Link to={`/movies/${movie.id}`}>
           <Button variant="outlined" size="medium" color="primary">
             More Info ...
           </Button>
         </Link>
-
       </CardActions>
     </Card>
   );
