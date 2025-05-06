@@ -1,31 +1,22 @@
 import React, { useContext } from "react";
-import { Typography, Grid, CircularProgress, Box, Button } from "@mui/material";
-import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd"; // Import the PlaylistAdd icon
+import { Typography, Grid, Button } from "@mui/material";
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import useUpcomingMovies from "../hooks/useUpcomingMovies";
 import MovieCard from "../components/movieCard";
 import { BaseMovieProps } from "../types/interfaces";
 import { MoviesContext } from "../contexts/moviesContext";
+import Spinner from "../components/spinner";
 
 const UpcomingMoviesPage: React.FC = () => {
-  const { movies, isLoading, error } = useUpcomingMovies();
+  const { movies, isLoading, isError, error } = useUpcomingMovies();
   const { addToFavourites } = useContext(MoviesContext);
 
   if (isLoading) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
-        <CircularProgress />
-      </Box>
-    );
+    return <Spinner />;
   }
 
-  if (error) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
-        <Typography variant="h6" color="error">
-          Error loading upcoming movies: {error.message}
-        </Typography>
-      </Box>
-    );
+  if (isError) {
+    return <h1>{error?.message}</h1>;
   }
 
   return (
@@ -42,9 +33,10 @@ const UpcomingMoviesPage: React.FC = () => {
                 <Button 
                   variant="contained" 
                   color="primary"
-                  startIcon={<PlaylistAddIcon />} // Add the PlaylistAdd icon here
+                  startIcon={<PlaylistAddIcon />}
                   onClick={() => addToFavourites(movie)}
                 >
+                  Add to Playlist
                 </Button>
               )} 
             />
