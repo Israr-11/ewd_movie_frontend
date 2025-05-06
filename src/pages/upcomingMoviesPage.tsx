@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { Typography, Grid, CircularProgress, Box, Button } from "@mui/material";
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd"; // Import the PlaylistAdd icon
 import useUpcomingMovies from "../hooks/useUpcomingMovies";
 import MovieCard from "../components/movieCard";
 import { BaseMovieProps } from "../types/interfaces";
@@ -41,9 +42,9 @@ const UpcomingMoviesPage: React.FC = () => {
                 <Button 
                   variant="contained" 
                   color="primary"
+                  startIcon={<PlaylistAddIcon />} // Add the PlaylistAdd icon here
                   onClick={() => addToFavourites(movie)}
                 >
-                  Add to Favorites
                 </Button>
               )} 
             />
