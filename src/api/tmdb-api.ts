@@ -63,3 +63,17 @@ export const getMovie = (id: string) => {
         return json.results;
       });
   };
+
+  export const getUpcomingMovies = () => {
+    return fetch(
+      `https://api.themoviedb.org/3/movie/upcoming?api_key=${import.meta.env.VITE_API_KEY}&language=en-US&page=1`
+    ).then((response) => {
+      if (!response.ok)
+        throw new Error(`Unable to fetch upcoming movies. Response status: ${response.status}`);
+      return response.json();
+    })
+    .catch((error) => {
+      throw error
+    });
+  };
+  
