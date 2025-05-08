@@ -7,7 +7,6 @@ import CardHeader from "@mui/material/CardHeader";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd"; // Import for watchlist icon
 import CalendarIcon from "@mui/icons-material/CalendarTodayTwoTone";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import Grid from "@mui/material/Grid";
@@ -23,10 +22,6 @@ const styles = {
   avatar: {
     backgroundColor: "rgb(255, 0, 0)",
   },
-  watchlistAvatar: { // New style for watchlist avatar
-    backgroundColor: "rgb(255, 0, 0)",
-    marginLeft: 2,
-  },
 };
 
 interface MovieCardProps {
@@ -35,27 +30,21 @@ interface MovieCardProps {
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({movie, action}) => {
-  const { favourites, watchlist } = useContext(MoviesContext);
+  // Safely destructure favourites with a default empty array
+  const { favourites = [] } = useContext(MoviesContext);
 
-  const isFavourite = favourites.find((id) => id === movie.id) ? true : false;
-  const isWatchlisted = watchlist.find((id) => id === movie.id) ? true : false; // Check if movie is in watchlist
+  // Safely check if movie is in favourites
+  const isFavourite = Array.isArray(favourites) && favourites.includes(movie.id);
 
   return (
     <Card sx={styles.card}>
       <CardHeader
         avatar={
-          <>
-            {isFavourite ? (
-              <Avatar sx={styles.avatar}>
-                <FavoriteIcon />
-              </Avatar>
-            ) : null}
-            {isWatchlisted ? (
-              <Avatar sx={styles.watchlistAvatar}>
-                <PlaylistAddIcon />
-              </Avatar>
-            ) : null}
-          </>
+          isFavourite ? (
+            <Avatar sx={styles.avatar}>
+              <FavoriteIcon />
+            </Avatar>
+          ) : null
         }
         title={
           <Typography variant="h5" component="p">

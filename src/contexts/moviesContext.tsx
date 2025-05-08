@@ -1,64 +1,139 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { BaseMovieProps, Review } from "../types/interfaces";
+import { addToFavorites, removeFromFavorites, getFavorites } from "../api/favorites-api";
+import { isAuthenticated } from "../utils/auth";
 
 interface MovieContextInterface {
     favourites: number[];
-    addToFavourites: ((movie: BaseMovieProps) => void);
-    removeFromFavourites: ((movie: BaseMovieProps) => void);
+    addToFavourites: ((movie: BaseMovieProps) => Promise<void>);
+    removeFromFavourites: ((movie: BaseMovieProps) => Promise<void>);
+    loadFavorites: (() => Promise<void>);
     addReview: ((movie: BaseMovieProps, review: Review) => void);
-    watchlist: number[]; // New watchlist state
-    addToWatchlist: ((movie: BaseMovieProps) => void); // New function
-    removeFromWatchlist: ((movie: BaseMovieProps) => void); // New function
+    myReviews: Record<string, Review>;
+    isLoading: boolean;
+    error: string | null;
 }
 
 const initialContextState: MovieContextInterface = {
     favourites: [],
-    addToFavourites: () => {},
-    removeFromFavourites: () => {},
+    addToFavourites: async () => {},
+    removeFromFavourites: async () => {},
+    loadFavorites: async () => {},
     addReview: (movie, review) => { movie.id, review},
-    watchlist: [], // Initialize empty watchlist
-    addToWatchlist: () => {}, // Initialize empty function
-    removeFromWatchlist: () => {}, // Initialize empty function
+    myReviews: {},
+    isLoading: false,
+    error: null
 };
 
 export const MoviesContext = React.createContext<MovieContextInterface>(initialContextState);
 
 const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const [favourites, setFavourites] = useState<number[]>([]);
-    const [myReviews, setMyReviews] = useState<Review[]>( [] );
-    const [watchlist, setWatchlist] = useState<number[]>([]); // New state for watchlist
+    const [myReviews, setMyReviews] = useState<Record<string, Review>>({});
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const addToFavourites = useCallback((movie: BaseMovieProps) => {
-        setFavourites((prevFavourites) => {
-            if (!prevFavourites.includes(movie.id)) {
-                return [...prevFavourites, movie.id];
-            }
-            return prevFavourites;
-        });
+    // Load favorites when the component mounts if authenticated
+    useEffect(() => {
+        if (isAuthenticated()) {
+            loadFavorites();
+        } else {
+            // Clear favorites when not authenticated
+            setFavourites([]);
+        }
     }, []);
 
-    const removeFromFavourites = useCallback((movie: BaseMovieProps) => {
-        setFavourites((prevFavourites) => prevFavourites.filter((mId) => mId !== movie.id));
-    }, []);
-
-    const addReview = (movie:BaseMovieProps, review: Review) => {
-        setMyReviews( {...myReviews, [movie.id]: review } )
+    // Function to load favorites from the API
+    const loadFavorites = async () => {
+        if (!isAuthenticated()) {
+            setFavourites([]);
+            return;
+        }
+        
+        try {
+            setIsLoading(true);
+            setError(null);
+            
+            // Call the API to get favorites
+            const favoritesData = await getFavorites();
+            console.log("Loaded favorites:", favoritesData);
+            
+            // Extract movie IDs from the response
+            const movieIds = Array.isArray(favoritesData) 
+                ? favoritesData.map((fav: any) => fav.MovieId) 
+                : [];
+                
+            setFavourites(movieIds);
+        } catch (err) {
+            console.error("Failed to load favorites:", err);
+            setError(err instanceof Error ? err.message : "Failed to load favorites");
+            // Ensure favourites is still an array even if the API call fails
+            setFavourites([]);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    // New function to add a movie to the watchlist
-    const addToWatchlist = useCallback((movie: BaseMovieProps) => {
-        setWatchlist((prevWatchlist) => {
-            if (!prevWatchlist.includes(movie.id)) {
-                return [...prevWatchlist, movie.id];
-            }
-            return prevWatchlist;
-        });
+    const addToFavourites = useCallback(async (movie: BaseMovieProps) => {
+        if (!isAuthenticated()) {
+            setError("You must be logged in to add favorites");
+            return;
+        }
+        
+        try {
+            setIsLoading(true);
+            setError(null);
+            console.log("Adding movie to favorites:", movie.id);
+            
+            // Call the API to add the movie to favorites
+            await addToFavorites(movie.id);
+            
+            // Update local state
+            setFavourites(prev => {
+                if (!prev.includes(movie.id)) {
+                    return [...prev, movie.id];
+                }
+                return prev;
+            });
+        } catch (err) {
+            console.error("Failed to add to favorites:", err);
+            setError(err instanceof Error ? err.message : "Failed to add to favorites");
+        } finally {
+            setIsLoading(false);
+        }
     }, []);
 
-    // New function to remove a movie from the watchlist
-    const removeFromWatchlist = useCallback((movie: BaseMovieProps) => {
-        setWatchlist((prevWatchlist) => prevWatchlist.filter((mId) => mId !== movie.id));
+    const removeFromFavourites = useCallback(async (movie: BaseMovieProps) => {
+        if (!isAuthenticated()) {
+            setError("You must be logged in to remove favorites");
+            return;
+        }
+        
+        try {
+            setIsLoading(true);
+            setError(null);
+            console.log("Removing movie from favorites:", movie.id);
+            
+            // Call the API to remove the movie from favorites
+            await removeFromFavorites(movie.id);
+            
+            // Update local state
+            setFavourites(prev => prev.filter(id => id !== movie.id));
+        } catch (err) {
+            console.error("Failed to remove from favorites:", err);
+            setError(err instanceof Error ? err.message : "Failed to remove from favorites");
+        } finally {
+            setIsLoading(false);
+        }
     }, []);
+
+    // Add a review for a movie
+    const addReview = (movie: BaseMovieProps, review: Review) => {
+        setMyReviews(prev => ({
+            ...prev,
+            [movie.id]: review
+        }));
+    };
 
     return (
         <MoviesContext.Provider
@@ -66,10 +141,11 @@ const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({ children }) 
                 favourites,
                 addToFavourites,
                 removeFromFavourites,
+                loadFavorites,
                 addReview,
-                watchlist, // Add watchlist to context
-                addToWatchlist, // Add function to context
-                removeFromWatchlist, // Add function to context
+                myReviews,
+                isLoading,
+                error
             }}
         >
             {children}

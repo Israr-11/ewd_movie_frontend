@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
-const BASE_URL = 'https://ig9ar0br27.execute-api.us-east-1.amazonaws.com/prod/';
+const BASE_URL = 'https://p68l7lqe8e.execute-api.us-east-1.amazonaws.com/prod/';
 
 
 interface AuthTokens {
@@ -15,6 +15,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  getUserId: () => string | null;  
   error: string | null;
 }
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -102,13 +103,34 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
       console.log('newTokens.idtoken:', newTokens.idToken)
       // Parse the ID token to get user info
       const payload = JSON.parse(atob(newTokens.idToken.split('.')[1]));
-      
+      // When parsing the token after login
+
+      console.log('payload:', payload)
+      const userId = payload.sub;
+
+     // Store in localStorage
+     localStorage.setItem('user_id', userId);
+
       setTokens(newTokens);
       setIsAuthenticated(true);
       setUserEmail(payload.email);
     } catch (err) {
       setError((err as Error).message);
       throw err;
+    }
+  };
+
+  const getUserId = () => {
+    const storedTokens = localStorage.getItem('auth_tokens');
+    if (!storedTokens) return null;
+    
+    try {
+      const tokens = JSON.parse(storedTokens);
+      const payload = JSON.parse(atob(tokens.idToken.split('.')[1]));
+      return payload.sub;
+    } catch (e) {
+      console.error('Error extracting user ID from token', e);
+      return null;
     }
   };
 
@@ -144,6 +166,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         login,
         register,
         logout,
+        getUserId,
         error,
       }}
     >
