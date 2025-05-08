@@ -30,6 +30,9 @@ const SiteHeader = () => {
 
   const authenticatedOptions = [
     { label: "Favorites", path: "/movies/favourites" },
+    { label: "Playlists", path: "/movies/playlists" },
+    { label: "Fantasy Movies", path: "/fantasy-movies" },
+
   ];
 
   const allOptions = isAuthenticated 

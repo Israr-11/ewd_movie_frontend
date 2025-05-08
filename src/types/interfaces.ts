@@ -81,3 +81,19 @@ export interface Review {
   rating: number,
   movieId: number,
 }
+
+export interface Playlist {
+  Id: number;
+  UserId: string;
+  Title: string;
+  Description: string;
+  Movies: number[];
+  CreatedDate: string;
+  UpdatedDate: string;
+}
+
+export interface PlaylistMovie {
+  movieId: number;
+  title?: string;
+  posterPath?: string;
+}

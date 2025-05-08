@@ -6,10 +6,11 @@ import MovieCard from "../components/movieCard";
 import { BaseMovieProps } from "../types/interfaces";
 import { MoviesContext } from "../contexts/moviesContext";
 import Spinner from "../components/spinner";
+import AddToPlaylist from "../components/playlist/addToPlaylist";
 
 const UpcomingMoviesPage: React.FC = () => {
   const { movies, isLoading, isError, error } = useUpcomingMovies();
-  const { addToWatchlist } = useContext(MoviesContext); // Use addToWatchlist instead of addToFavourites
+ // const { addToWatchlist } = useContext(MoviesContext); // Use addToWatchlist instead of addToFavourites
 
   if (isLoading) {
     return <Spinner />;
@@ -30,14 +31,7 @@ const UpcomingMoviesPage: React.FC = () => {
             <MovieCard 
               movie={movie} 
               action={(movie) => (
-                <Button 
-                  variant="contained" 
-                  color="primary"
-                  startIcon={<PlaylistAddIcon />}
-                  onClick={() => addToWatchlist(movie)} // Use addToWatchlist instead
-                >
-                  Add to Watchlist
-                </Button>
+                <AddToPlaylist {...movie} />
               )} 
             />
           </Grid>

@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from 'react-dom/client'
-import { BrowserRouter, Route, Navigate, Routes, Link } from "react-router-dom";
+import { BrowserRouter, Route, Navigate, Routes } from "react-router-dom";
 import HomePage from "./pages/homePage";
 import MoviePage from "./pages/movieDetailsPage";
 import FavouriteMoviesPage from "./pages/favouriteMoviesPage"; 
@@ -9,12 +9,18 @@ import SiteHeader from './components/siteHeader'
 import { QueryClientProvider, QueryClient } from "react-query";
 import { ReactQueryDevtools } from 'react-query/devtools';
 import MoviesContextProvider from "./contexts/moviesContext";
-import { AuthProvider } from "./contexts/authContext"; // Add this
+import { AuthProvider } from "./contexts/authContext";
 import AddMovieReviewPage from './pages/addMovieReviewPage';
 import UpcomingMoviesPage from "./pages/upcomingMoviesPage";
 import LoginPage from "./pages/loginPage";
 import RegisterPage from "./pages/registerPage";
-import ProtectedRoute from "./components/protectedRoutes"; // Add this
+import ProtectedRoute from "./components/protectedRoutes";
+import { PlaylistProvider } from "./contexts/playlistContext";
+import PlaylistsPage from "./pages/playlistsPage";
+import PlaylistDetailsPage from "./pages/playlistDetailsPage";
+import FantasyMoviesListPage from "./pages/fantasyMoviesListPage";
+import CreateFantasyMoviePage from "./pages/FantasyMoviePage";
+import FantasyMovieDetailsPage from "./pages/fantasyMovieDetailsPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,36 +39,80 @@ const App = () => {
         <BrowserRouter>
           <SiteHeader />
           <MoviesContextProvider>
-            <Routes>
-              {/* Public routes */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/" element={<HomePage />} />
-              <Route path="/movies/:id" element={<MoviePage />} />
-              <Route path="/reviews/:id" element={<MovieReviewPage />} />
-              <Route path="/movies/upcoming" element={<UpcomingMoviesPage />} />
-              
-              {/* Protected routes */}
-              <Route 
-                path="/movies/favourites" 
-                element={
-                  <ProtectedRoute>
-                    <FavouriteMoviesPage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/reviews/form" 
-                element={
-                  <ProtectedRoute>
-                    <AddMovieReviewPage />
-                  </ProtectedRoute>
-                } 
-              />
-              
-              {/* Fallback route */}
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
+            <PlaylistProvider>
+              <Routes>
+                {/* Public routes */}
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/" element={<HomePage />} />
+                <Route path="/movies/:id" element={<MoviePage />} />
+                <Route path="/reviews/:id" element={<MovieReviewPage />} />
+                <Route path="/movies/upcoming" element={<UpcomingMoviesPage />} />
+                
+                {/* Protected routes */}
+                <Route 
+                  path="/movies/favourites" 
+                  element={
+                    <ProtectedRoute>
+                      <FavouriteMoviesPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/movies/playlists" 
+                  element={
+                    <ProtectedRoute>
+                      <PlaylistsPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/movies/playlists/:id" 
+                  element={
+                    <ProtectedRoute>
+                      <PlaylistDetailsPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/reviews/form" 
+                  element={
+                    <ProtectedRoute>
+                      <AddMovieReviewPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                
+                {/* Fantasy Movie routes */}
+                <Route 
+                  path="/fantasy-movies" 
+                  element={
+                    <ProtectedRoute>
+                      <FantasyMoviesListPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/fantasy-movies/create" 
+                  element={
+                    <ProtectedRoute>
+                      <CreateFantasyMoviePage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/fantasy-movies/:id" 
+                  element={
+                    <ProtectedRoute>
+                      <FantasyMovieDetailsPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                
+                {/* Fallback route */}
+                <Route path="*" element={<Navigate to="/" />} />
+              </Routes>
+            </PlaylistProvider>
           </MoviesContextProvider>
           <ReactQueryDevtools initialIsOpen={false} />
         </BrowserRouter>
