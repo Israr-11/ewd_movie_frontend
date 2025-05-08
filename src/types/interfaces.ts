@@ -1,4 +1,5 @@
 export interface BaseMovieProps {
+  adult: any;
   title: string;
   budget: number;
   homepage: string | undefined;
@@ -48,8 +49,7 @@ export interface MoviePageProps {
   images: MovieImage[];
 }
 
-export type FilterOption = "title" | "genre";
-
+export type FilterOption = "title" | "genre" | "rating" | "year" | "sortBy";
 export interface MovieListPageTemplateProps extends BaseMovieListProps {
   title: string;
 }

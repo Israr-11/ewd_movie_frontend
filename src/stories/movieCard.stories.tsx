@@ -23,18 +23,14 @@ type Story = StoryObj<typeof meta>;
 export const Basic: Story = {
   args: {
     action: (movie ) => <AddToFavouritesIcon {...movie} />,
-    movie: SampleMovie,
-
+    movie: { ...SampleMovie, isError: false },
   }
-
-};
-Basic.storyName = "Default";
+};Basic.storyName = "Default";
 
 const sampleNoPoster = { ...SampleMovie, poster_path: undefined };
 export const Exceptional: Story = {
   args: {
-    movie: sampleNoPoster,
+    movie: { ...sampleNoPoster, isError: false },
     action: (movie ) => <AddToFavouritesIcon {...movie} />,
   }
-};
-Exceptional.storyName = "Exception";
+};Exceptional.storyName = "Exception";
