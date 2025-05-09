@@ -29,6 +29,9 @@ export interface BaseMovieListProps {
 
 
 export interface MovieDetailsProps extends BaseMovieProps {
+  production_companies: any;
+  production_companies: boolean;
+  images: any;
   genres: {
     id: number;
     name: string;

@@ -1,17 +1,48 @@
 import React from "react"; 
-import { useParams } from "react-router-dom";
-import MovieDetails from "../components/movieDetails";
-import PageTemplate from "../components/templateMoviePage";
-import { getMovie } from '../api/tmdb-api'
+import { useParams, useNavigate } from "react-router-dom";
+import { 
+  Typography, 
+  Grid, 
+  Box, 
+  Card, 
+  CardMedia, 
+  CardContent, 
+  Chip, 
+  Rating, 
+  Button,
+  Divider,
+  styled,
+  CircularProgress,
+  Alert
+} from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { getMovie } from '../api/tmdb-api';
 import { useQuery } from "react-query";
 import Spinner from '../components/spinner';
-import { MovieDetailsProps } from "../types/interfaces"
+import { MovieDetailsProps } from "../types/interfaces";
+import MovieDetails from "../components/movieDetails";
+import PageTemplate from "../components/templateMoviePage";
+import AddToFavouritesIcon from '../components/cardIcons/addToFavourites';
 
-const MovieDetailsPage: React.FC= () => {
+// Styled components for enhanced design
+const BackButton = styled(Button)({
+  color: "#E50914",
+  marginBottom: "1.5rem",
+  "&:hover": {
+    backgroundColor: "rgba(229, 9, 20, 0.1)",
+  },
+  "& .MuiSvgIcon-root": {
+    color: "#E50914",
+  }
+});
+
+const MovieDetailsPage: React.FC = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  
   const { data: movie, error, isLoading, isError } = useQuery<MovieDetailsProps, Error>(
     ["movie", id],
-    ()=> getMovie(id||"")
+    () => getMovie(id || "")
   );
 
   if (isLoading) {
@@ -19,22 +50,32 @@ const MovieDetailsPage: React.FC= () => {
   }
 
   if (isError) {
-    return <h1>{(error as Error).message}</h1>;
+    return (
+      <Box sx={{ mt: 4, mx: 2 }}>
+        <Alert severity="error">{(error as Error).message}</Alert>
+      </Box>
+    );
   }
 
-
   return (
-    <>
+    <Box sx={{ p: 3 }}>
+      <BackButton 
+        startIcon={<ArrowBackIcon />} 
+        onClick={() => navigate(-1)}
+      >
+        Back
+      </BackButton>
+      
       {movie ? (
-        <>
         <PageTemplate movie={movie}> 
           <MovieDetails {...movie} />
         </PageTemplate>
-      </>
-    ) : (
-      <p>Waiting for movie details</p>
-    )}
-    </>
+      ) : (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+          <CircularProgress sx={{ color: "#E50914" }} />
+        </Box>
+      )}
+    </Box>
   );
 };
 

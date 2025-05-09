@@ -26,8 +26,8 @@ const styles = {
     },
     fab: {
         position: "fixed",
-        top: 50,
-        right: 2,
+        top: 70,
+        right: 30,
     },
 };
 
@@ -38,7 +38,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = (movie) => {
     return (
         <>
             <Typography variant="h5" component="h3">
-                Overview
+                Summary
             </Typography>
 
             <Typography variant="h6" component="p">
@@ -47,7 +47,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = (movie) => {
 
             <Paper component="ul" sx={styles.chipSet}>
                 <li>
-                    <Chip label="Genres" sx={styles.chipLabel} color="primary" />
+                    <Chip label="Genres" sx={styles.chipLabel} color="error" />
                 </li>
                 {movie.genres.map((g) => (
                     <li key={g.name}>
@@ -68,7 +68,7 @@ const MovieDetails: React.FC<MovieDetailsProps> = (movie) => {
                 <Chip label={`Released: ${movie.release_date}`} />
             </Paper>
             <Fab
-                color="secondary"
+                color="error"
                 variant="extended"
                 onClick={() => setDrawerOpen(true)}
                 sx={styles.fab}
