@@ -1,4 +1,4 @@
-const API_URL = 'https://p68l7lqe8e.execute-api.us-east-1.amazonaws.com/prod';
+const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const loginUser = async (email: string, password: string) => {
   const response = await fetch(`${API_URL}/auth/login`, {

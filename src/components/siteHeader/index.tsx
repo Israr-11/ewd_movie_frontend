@@ -184,16 +184,20 @@ const SiteHeader = () => {
                 {isAuthenticated ? (
                   <StyledMenuItem onClick={handleLogout}>Logout</StyledMenuItem>
                 ) : (
-                  <>
-                    <StyledMenuItem onClick={() => handleMenuSelect("/login")}>
-                      Login
-                    </StyledMenuItem>
+                  [
                     <StyledMenuItem
+                      key="login"
+                      onClick={() => handleMenuSelect("/login")}
+                    >
+                      Login
+                    </StyledMenuItem>,
+                    <StyledMenuItem
+                      key="register"
                       onClick={() => handleMenuSelect("/register")}
                     >
                       Register
-                    </StyledMenuItem>
-                  </>
+                    </StyledMenuItem>,
+                  ]
                 )}
               </StyledMenu>
             </>

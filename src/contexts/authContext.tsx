@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 
-const BASE_URL = "https://p68l7lqe8e.execute-api.us-east-1.amazonaws.com/prod/";
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+
 
 interface AuthTokens {
   idToken: string;

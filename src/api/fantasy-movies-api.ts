@@ -1,6 +1,6 @@
 import { getIdToken } from '../utils/auth';
 
-const API_URL = import.meta.env.VITE_API_ENDPOINT || 'https://p68l7lqe8e.execute-api.us-east-1.amazonaws.com/prod';
+const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 export interface CastMember {
   Name: string;
