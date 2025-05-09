@@ -151,6 +151,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
     } finally {
       // Clear local storage and state regardless of API response
       localStorage.removeItem('auth_tokens');
+      localStorage.removeItem('user_id');
       setTokens(null);
       setIsAuthenticated(false);
       setUserEmail(null);
