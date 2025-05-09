@@ -287,7 +287,7 @@ const CreateFantasyMoviePage = () => {
   };
   
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 10 }}>
       <Paper elevation={3} sx={{ p: 3 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Create Your Fantasy Movie
@@ -398,7 +398,7 @@ const CreateFantasyMoviePage = () => {
                   />
                   <Button
                     variant="contained"
-                    color="primary"
+                    color="error"
                     onClick={addCompany}
                     startIcon={<AddIcon />}
                     disabled={!newCompany.trim()}
@@ -415,7 +415,7 @@ const CreateFantasyMoviePage = () => {
                       key={company}
                       label={company}
                       onDelete={() => removeCompany(company)}
-                      color="primary"
+                      color="error"
                       variant="outlined"
                     />
                   ))}
@@ -454,6 +454,7 @@ const CreateFantasyMoviePage = () => {
                   <Button
                     component="label"
                     variant="contained"
+                    color="error"
                     startIcon={<CloudUploadIcon />}
                     fullWidth
                     disabled={isUploading}
@@ -562,7 +563,7 @@ const CreateFantasyMoviePage = () => {
             <Button
               type="submit"
               variant="contained"
-              color="primary"
+              color="error"
               disabled={isSubmitting || isUploading}
               startIcon={isSubmitting && <CircularProgress size={20} color="inherit" />}
             >
