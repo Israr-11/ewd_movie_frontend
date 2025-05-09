@@ -1,8 +1,56 @@
-import React from "react";
-import { Typography, Grid, Card, CardMedia, CardContent, Box, CircularProgress, Alert } from "@mui/material";
+import { Typography, Grid, Card, CardMedia, CardContent, Box, CircularProgress, Alert, Chip, styled } from "@mui/material";
 import { Link } from "react-router-dom";
 import useActors from "../hooks/useActors";
 import img from '../images/film-poster-placeholder.png';
+
+// Styled components for enhanced design
+const PageContainer = styled(Box)({
+  padding: "2rem 1.5rem",
+  backgroundColor: "#0D0D0D", // Updated to match header/footer
+  minHeight: "calc(100vh - 180px)",
+  marginBottom: "5rem",
+});
+
+const PageTitle = styled(Typography)({
+  color: "#FFFFFF",
+  fontWeight: "bold",
+  marginBottom: "1.5rem",
+  borderBottom: "2px solid #E50914",
+  paddingBottom: "0.5rem",
+  display: "inline-block",
+});
+
+const ActorCard = styled(Card)({
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  backgroundColor: "#0D0D0D", // Updated to match header/footer
+  color: "#FFFFFF",
+  borderRadius: "8px",
+  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.5)",
+  border: "1px solid #333333",
+  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+  "&:hover": {
+    transform: "translateY(-5px)",
+    boxShadow: "0 8px 16px rgba(0, 0, 0, 0.6)",
+  },
+});
+
+const ActorName = styled(Typography)({
+  color: "#FFFFFF",
+  fontWeight: "bold",
+});
+
+const KnownFor = styled(Typography)({
+  color: "#AAAAAA",
+  marginTop: "0.5rem",
+});
+
+const ActorImage = styled(CardMedia)({
+  height: 350,
+  objectFit: "cover",
+  borderBottom: "1px solid #333333",
+});
 
 const ActorsPage = () => {
   const { actors, isLoading, error } = useActors();
@@ -10,7 +58,7 @@ const ActorsPage = () => {
   if (isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-        <CircularProgress />
+        <CircularProgress sx={{ color: "#E50914" }} />
       </Box>
     );
   }
@@ -24,42 +72,46 @@ const ActorsPage = () => {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
+    <PageContainer>
+      <PageTitle variant="h4">
         Popular Actors
-      </Typography>
+      </PageTitle>
       
       <Grid container spacing={3}>
         {actors.map((actor) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={actor.id}>
             <Link to={`/actors/${actor.id}`} style={{ textDecoration: 'none' }}>
-              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                <CardMedia
-                  component="img"
-                  height="350"
+              <ActorCard>
+                <ActorImage
                   image={actor.profile_path ? `https://image.tmdb.org/t/p/w500${actor.profile_path}` : img}
-                  alt={actor.name}
-                  sx={{ objectFit: 'cover' }}
+                  title={actor.name}
                 />
                 <CardContent>
-                  <Typography variant="h6" component="div" gutterBottom>
+                  <ActorName variant="h6" gutterBottom>
                     {actor.name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {actor.known_for_department}
-                  </Typography>
+                  </ActorName>
+                  <Chip 
+                    label={actor.known_for_department} 
+                    size="small" 
+                    sx={{ 
+                      backgroundColor: "rgba(229, 9, 20, 0.1)",
+                      color: "#FFFFFF",
+                      border: "1px solid rgba(229, 9, 20, 0.3)",
+                      mb: 1
+                    }} 
+                  />
                   {actor.known_for && actor.known_for.length > 0 && (
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    <KnownFor variant="body2">
                       Known for: {actor.known_for.map(item => item.title || item.name).slice(0, 2).join(', ')}
-                    </Typography>
+                    </KnownFor>
                   )}
                 </CardContent>
-              </Card>
+              </ActorCard>
             </Link>
           </Grid>
         ))}
       </Grid>
-    </Box>
+    </PageContainer>
   );
 };
 
