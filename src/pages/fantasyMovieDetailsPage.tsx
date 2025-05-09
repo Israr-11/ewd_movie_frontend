@@ -120,13 +120,14 @@ const FantasyMovieDetailsPage = () => {
   
   if (error) {
     return (
-      <Container maxWidth="md" sx={{ mt: 4 }}>
+      <Container maxWidth="md"  sx={{ mt: 4 }}>
         <Alert severity="error" sx={{ mb: 3 }}>
           {error}
         </Alert>
         <Button
           startIcon={<ArrowBackIcon />}
           onClick={() => navigate('/fantasy-movies')}
+          color="error"
         >
           Back to Fantasy Movies
         </Button>
@@ -136,13 +137,14 @@ const FantasyMovieDetailsPage = () => {
   
   if (!movie) {
     return (
-      <Container maxWidth="md" sx={{ mt: 4 }}>
+      <Container maxWidth="md" color="error" sx={{ mt: 4 }}>
         <Alert severity="warning" sx={{ mb: 3 }}>
           Fantasy movie not found
         </Alert>
         <Button
           startIcon={<ArrowBackIcon />}
           onClick={() => navigate('/fantasy-movies')}
+          color="error"
         >
           Back to Fantasy Movies
         </Button>
@@ -151,11 +153,12 @@ const FantasyMovieDetailsPage = () => {
   }
   
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+    <Container maxWidth="lg" color="error" sx={{ mb: 10, color:'red' }}>
       <Box sx={{ mb: 3 }}>
         <Button
           startIcon={<ArrowBackIcon />}
           onClick={() => navigate('/fantasy-movies')}
+          color="error"
         >
           Back to Fantasy Movies
         </Button>
@@ -235,6 +238,7 @@ const FantasyMovieDetailsPage = () => {
                 startIcon={<AddIcon />}
                 variant="contained"
                 size="small"
+                color="error"
                 onClick={() => setDialogOpen(true)}
               >
                 Add Cast Member
@@ -319,6 +323,7 @@ const FantasyMovieDetailsPage = () => {
           <Button 
             onClick={handleAddCast} 
             variant="contained" 
+            color="error"
             disabled={isSubmitting || !newCast.Name.trim() || !newCast.Role.trim()}
           >
             {isSubmitting ? 'Adding...' : 'Add'}
