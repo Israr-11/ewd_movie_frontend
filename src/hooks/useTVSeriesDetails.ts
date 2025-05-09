@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { getTVSeriesDetails, getTVSeriesImages } from '../api/tmdb-api';
 
 interface TVSeriesDetails {
+  type: string;
+  origin_country: any;
   id: number;
   name: string;
   overview: string;
