@@ -1,23 +1,20 @@
 import React, { useContext } from "react";
 import { Typography, Grid, Box, styled } from "@mui/material";
-import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import useUpcomingMovies from "../hooks/useUpcomingMovies";
 import MovieCard from "../components/movieCard";
 import { BaseMovieProps } from "../types/interfaces";
-import { MoviesContext } from "../contexts/moviesContext";
 import Spinner from "../components/spinner";
 import AddToPlaylist from "../components/playlist/addToPlaylist";
-import { JSX } from "react/jsx-runtime";
 
 const PageContainer = styled(Box)({
   position: "relative",
   padding: "1.5rem 1rem",
-  width: "97.9%", // Match the header width
-  marginBottom: "80px", // Add significant bottom margin to clear the footer
-  minHeight: "calc(100vh - 180px)", // Set minimum height to push content away from footer
+  width: "97.9%",
+  marginBottom: "80px",
+  minHeight: "calc(100vh - 180px)",
   display: "flex",
   flexDirection: "column",
-  backgroundColor: "#141414", // Netflix-style dark background
+  backgroundColor: "#141414",
 });
 
 const PageTitle = styled(Typography)({
@@ -29,21 +26,22 @@ const PageTitle = styled(Typography)({
   display: "inline-block",
 });
 
-// Enhanced AddToPlaylist component wrapper
 const EnhancedAddToPlaylist = (props: BaseMovieProps) => {
   return (
-    <Box sx={{ 
-      display: 'flex', 
-      justifyContent: 'center',
-      '& .MuiIconButton-root': {
-        color: '#E50914',
-        transition: 'all 0.3s ease',
-        '&:hover': {
-          transform: 'scale(1.1)',
-          backgroundColor: 'rgba(229, 9, 20, 0.1)',
-        }
-      }
-    }}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        "& .MuiIconButton-root": {
+          color: "#E50914",
+          transition: "all 0.3s ease",
+          "&:hover": {
+            transform: "scale(1.1)",
+            backgroundColor: "rgba(229, 9, 20, 0.1)",
+          },
+        },
+      }}
+    >
       <AddToPlaylist {...props} />
     </Box>
   );
@@ -51,7 +49,6 @@ const EnhancedAddToPlaylist = (props: BaseMovieProps) => {
 
 const UpcomingMoviesPage: React.FC = () => {
   const { movies, isLoading, isError, error } = useUpcomingMovies();
-  // const { addToWatchlist } = useContext(MoviesContext); // Use addToWatchlist instead of addToFavourites
 
   if (isLoading) {
     return <Spinner />;
@@ -63,17 +60,13 @@ const UpcomingMoviesPage: React.FC = () => {
 
   return (
     <PageContainer>
-      <PageTitle variant="h4">
-        Upcoming Movies
-      </PageTitle>
+      <PageTitle variant="h4">Upcoming Movies</PageTitle>
       <Grid container spacing={3}>
         {movies.map((movie: BaseMovieProps) => (
           <Grid key={movie.id} item xs={12} sm={6} md={4} lg={3} xl={3}>
-            <MovieCard 
-              movie={movie} 
-              action={
-                <EnhancedAddToPlaylist {...movie} />
-              } 
+            <MovieCard
+              movie={movie}
+              action={<EnhancedAddToPlaylist {...movie} />}
             />
           </Grid>
         ))}

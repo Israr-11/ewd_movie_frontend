@@ -1,52 +1,52 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../../contexts/authContext';
-import { 
-  Box, 
-  TextField, 
-  Button, 
-  Typography, 
-  Paper, 
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../../contexts/authContext";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Paper,
   Container,
-  Alert
-} from '@mui/material';
+  Alert,
+} from "@mui/material";
 
 const RegisterForm: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [formError, setFormError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [formError, setFormError] = useState("");
   const { register, error } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormError('');
+    setFormError("");
 
-    // Basic validation
     if (!email || !password || !confirmPassword) {
-      setFormError('All fields are required');
+      setFormError("All fields are required");
       return;
     }
 
     if (password !== confirmPassword) {
-      setFormError('Passwords do not match');
+      setFormError("Passwords do not match");
       return;
     }
 
-    // Password strength validation
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(password)) {
-      setFormError('Password must be at least 8 characters long and include uppercase, lowercase, number, and special character');
+      setFormError(
+        "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character"
+      );
       return;
     }
 
     try {
       await register(email, password);
-      navigate('/login'); // Redirect to login page after successful registration
+      navigate("/login");
     } catch (err) {
-      // Error is already handled in the auth context
-      console.error('Registration error:', err);
+      console.error("Registration error:", err);
     }
   };
 
@@ -56,13 +56,13 @@ const RegisterForm: React.FC = () => {
         <Typography variant="h4" component="h1" gutterBottom align="center">
           Register
         </Typography>
-        
+
         {(error || formError) && (
           <Alert severity="error" sx={{ mb: 2 }}>
             {formError || error}
           </Alert>
         )}
-        
+
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <TextField
             margin="normal"
@@ -109,8 +109,7 @@ const RegisterForm: React.FC = () => {
           </Button>
           <Box textAlign="center">
             <Typography variant="body2">
-              Already have an account?{' '}
-              <Link to="/login">Login</Link>
+              Already have an account? <Link to="/login">Login</Link>
             </Typography>
           </Box>
         </Box>

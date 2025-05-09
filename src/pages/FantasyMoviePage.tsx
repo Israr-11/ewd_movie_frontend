@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   Typography,
@@ -20,20 +20,40 @@ import {
   Card,
   CardContent,
   FormHelperText,
-  SelectChangeEvent
-} from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { getPresignedUrl, uploadImageToS3, FantasyMovie, CastMember } from '../api/fantasy-movies-api';
-import { isAuthenticated } from '../utils/auth';
-import toast from '../utils/toastService';
-import { useFantasyMovies } from '../hooks/useFantasyMovies';
+  SelectChangeEvent,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import {
+  getPresignedUrl,
+  uploadImageToS3,
+  FantasyMovie,
+  CastMember,
+} from "../api/fantasy-movies-api";
+import { isAuthenticated } from "../utils/auth";
+import toast from "../utils/toastService";
+import { useFantasyMovies } from "../hooks/useFantasyMovies";
 
 const genreOptions = [
-  'Action', 'Adventure', 'Animation', 'Comedy', 'Crime', 'Documentary',
-  'Drama', 'Family', 'Fantasy', 'History', 'Horror', 'Music', 'Mystery',
-  'Romance', 'Science Fiction', 'Thriller', 'War', 'Western'
+  "Action",
+  "Adventure",
+  "Animation",
+  "Comedy",
+  "Crime",
+  "Documentary",
+  "Drama",
+  "Family",
+  "Fantasy",
+  "History",
+  "Horror",
+  "Music",
+  "Mystery",
+  "Romance",
+  "Science Fiction",
+  "Thriller",
+  "War",
+  "Western",
 ];
 
 const CreateFantasyMoviePage = () => {
@@ -42,222 +62,208 @@ const CreateFantasyMoviePage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
-  // Form state
-  const [title, setTitle] = useState('');
-  const [overview, setOverview] = useState('');
+
+  const [title, setTitle] = useState("");
+  const [overview, setOverview] = useState("");
   const [genres, setGenres] = useState<string[]>([]);
-  const [releaseDate, setReleaseDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [releaseDate, setReleaseDate] = useState<string>(
+    new Date().toISOString().split("T")[0]
+  );
   const [runtime, setRuntime] = useState<number>(120);
   const [companies, setCompanies] = useState<string[]>([]);
-  const [newCompany, setNewCompany] = useState('');
-  const [posterUrl, setPosterUrl] = useState('');
+  const [newCompany, setNewCompany] = useState("");
+  const [posterUrl, setPosterUrl] = useState("");
   const [posterFile, setPosterFile] = useState<File | null>(null);
   const [posterPreview, setPosterPreview] = useState<string | null>(null);
-  
-  // Cast members
+
   const [cast, setCast] = useState<CastMember[]>([
-    { Name: '', Role: '', Description: '' }
+    { Name: "", Role: "", Description: "" },
   ]);
-  
-  // Form validation
+
   const [formErrors, setFormErrors] = useState({
-    title: '',
-    overview: '',
-    genres: '',
-    releaseDate: '',
-    runtime: '',
-    companies: '',
-    poster: '',
-    cast: ''
+    title: "",
+    overview: "",
+    genres: "",
+    releaseDate: "",
+    runtime: "",
+    companies: "",
+    poster: "",
+    cast: "",
   });
-  
-  // Check if user is authenticated
+
   React.useEffect(() => {
     if (!isAuthenticated()) {
-      navigate('/login', { replace: true });
+      navigate("/login", { replace: true });
     }
   }, [navigate]);
-  
-  // Handle poster file selection
+
   const handlePosterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-      
-      // Validate file type
-      if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
-        setFormErrors(prev => ({
+
+      if (!file.type.match("image/jpeg") && !file.type.match("image/png")) {
+        setFormErrors((prev) => ({
           ...prev,
-          poster: 'Please upload a JPEG or PNG image'
+          poster: "Please upload a JPEG or PNG image",
         }));
         return;
       }
-      
-      // Validate file size (max 5MB)
+
       if (file.size > 5 * 1024 * 1024) {
-        setFormErrors(prev => ({
+        setFormErrors((prev) => ({
           ...prev,
-          poster: 'Image size should be less than 5MB'
+          poster: "Image size should be less than 5MB",
         }));
         return;
       }
-      
+
       setPosterFile(file);
       setPosterPreview(URL.createObjectURL(file));
-      setFormErrors(prev => ({ ...prev, poster: '' }));
+      setFormErrors((prev) => ({ ...prev, poster: "" }));
     }
   };
-  
-  // Upload poster to S3
+
   const uploadPoster = async () => {
     if (!posterFile) {
-      setFormErrors(prev => ({
+      setFormErrors((prev) => ({
         ...prev,
-        poster: 'Please select a poster image'
+        poster: "Please select a poster image",
       }));
       return null;
     }
-    
+
     try {
       setIsUploading(true);
-      
-      // Get presigned URL
+
       const { uploadUrl, publicUrl } = await getPresignedUrl(posterFile.type);
-      
-      // Upload file to S3
+
       await uploadImageToS3(uploadUrl, posterFile);
-      
-      // Return the public URL
+
       return publicUrl;
     } catch (err) {
-      console.error('Failed to upload poster:', err);
-      setError(err instanceof Error ? err.message : 'Failed to upload poster');
+      console.error("Failed to upload poster:", err);
+      setError(err instanceof Error ? err.message : "Failed to upload poster");
       return null;
     } finally {
       setIsUploading(false);
     }
   };
-  
-  // Add a new cast member
+
   const addCastMember = () => {
-    setCast([...cast, { Name: '', Role: '', Description: '' }]);
+    setCast([...cast, { Name: "", Role: "", Description: "" }]);
   };
-  
-  // Remove a cast member
+
   const removeCastMember = (index: number) => {
     if (cast.length > 1) {
       setCast(cast.filter((_, i) => i !== index));
     }
   };
-  
-  // Update cast member
-  const updateCastMember = (index: number, field: keyof CastMember, value: string) => {
+
+  const updateCastMember = (
+    index: number,
+    field: keyof CastMember,
+    value: string
+  ) => {
     const updatedCast = [...cast];
     updatedCast[index] = { ...updatedCast[index], [field]: value };
     setCast(updatedCast);
   };
-  
-  // Add a production company
+
   const addCompany = () => {
     if (newCompany.trim() && !companies.includes(newCompany.trim())) {
       setCompanies([...companies, newCompany.trim()]);
-      setNewCompany('');
+      setNewCompany("");
     }
   };
-  
-  // Remove a production company
+
   const removeCompany = (company: string) => {
-    setCompanies(companies.filter(c => c !== company));
+    setCompanies(companies.filter((c) => c !== company));
   };
-  
-  // Handle genre selection
+
   const handleGenreChange = (event: SelectChangeEvent<string[]>) => {
     const value = event.target.value;
-    setGenres(typeof value === 'string' ? value.split(',') : value);
+    setGenres(typeof value === "string" ? value.split(",") : value);
   };
-  
-  // Validate form
+
   const validateForm = () => {
     let isValid = true;
     const errors = {
-      title: '',
-      overview: '',
-      genres: '',
-      releaseDate: '',
-      runtime: '',
-      companies: '',
-      poster: '',
-      cast: ''
+      title: "",
+      overview: "",
+      genres: "",
+      releaseDate: "",
+      runtime: "",
+      companies: "",
+      poster: "",
+      cast: "",
     };
-    
+
     if (!title.trim()) {
-      errors.title = 'Title is required';
+      errors.title = "Title is required";
       isValid = false;
     }
-    
+
     if (!overview.trim()) {
-      errors.overview = 'Overview is required';
+      errors.overview = "Overview is required";
       isValid = false;
     }
-    
+
     if (genres.length === 0) {
-      errors.genres = 'At least one genre is required';
+      errors.genres = "At least one genre is required";
       isValid = false;
     }
-    
+
     if (!releaseDate) {
-      errors.releaseDate = 'Release date is required';
+      errors.releaseDate = "Release date is required";
       isValid = false;
     }
-    
+
     if (!runtime || runtime <= 0) {
-      errors.runtime = 'Valid runtime is required';
+      errors.runtime = "Valid runtime is required";
       isValid = false;
     }
-    
+
     if (companies.length === 0) {
-      errors.companies = 'At least one production company is required';
+      errors.companies = "At least one production company is required";
       isValid = false;
     }
-    
+
     if (!posterFile && !posterUrl) {
-      errors.poster = 'Poster image is required';
+      errors.poster = "Poster image is required";
       isValid = false;
     }
-    
-    // Check if all cast members have name and role
-    const invalidCast = cast.some(member => !member.Name.trim() || !member.Role.trim());
+
+    const invalidCast = cast.some(
+      (member) => !member.Name.trim() || !member.Role.trim()
+    );
     if (invalidCast) {
-      errors.cast = 'All cast members must have a name and role';
+      errors.cast = "All cast members must have a name and role";
       isValid = false;
     }
-    
+
     setFormErrors(errors);
     return isValid;
   };
-  
-  // Handle form submission
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
-    
+
     try {
       setIsSubmitting(true);
       setError(null);
-      
-      // Upload poster if needed
+
       let finalPosterUrl = posterUrl;
       if (posterFile) {
-        finalPosterUrl = await uploadPoster() || '';
+        finalPosterUrl = (await uploadPoster()) || "";
         if (!finalPosterUrl) {
-          throw new Error('Failed to upload poster image');
+          throw new Error("Failed to upload poster image");
         }
       }
-      
-      // Create movie data
+
       const movieData: FantasyMovie = {
         Title: title,
         Overview: overview,
@@ -266,39 +272,40 @@ const CreateFantasyMoviePage = () => {
         Runtime: runtime,
         ProductionCompanies: companies,
         PosterUrl: finalPosterUrl,
-        Cast: cast
+        Cast: cast,
       };
-      
-      // Submit movie
+
       const newMovie = await addMovie(movieData);
-      
-      toast.success('Fantasy movie created successfully!');
-      
-      // Navigate to the movie details page
+
+      toast.success("Fantasy movie created successfully!");
+
       navigate(`/fantasy-movies/${newMovie.Id}`);
-      
     } catch (err) {
-      console.error('Failed to create fantasy movie:', err);
-      setError(err instanceof Error ? err.message : 'Failed to create fantasy movie');
-      toast.error(err instanceof Error ? err.message : 'Failed to create fantasy movie');
+      console.error("Failed to create fantasy movie:", err);
+      setError(
+        err instanceof Error ? err.message : "Failed to create fantasy movie"
+      );
+      toast.error(
+        err instanceof Error ? err.message : "Failed to create fantasy movie"
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
-  
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 10 }}>
       <Paper elevation={3} sx={{ p: 3 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Create Your Fantasy Movie
         </Typography>
-        
+
         {error && (
           <Alert severity="error" sx={{ mb: 3 }}>
             {error}
           </Alert>
         )}
-        
+
         <Box component="form" onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             {/* Left column - Basic info */}
@@ -313,7 +320,7 @@ const CreateFantasyMoviePage = () => {
                 helperText={formErrors.title}
                 required
               />
-              
+
               <TextField
                 label="Overview"
                 fullWidth
@@ -326,8 +333,12 @@ const CreateFantasyMoviePage = () => {
                 helperText={formErrors.overview}
                 required
               />
-              
-              <FormControl fullWidth margin="normal" error={!!formErrors.genres}>
+
+              <FormControl
+                fullWidth
+                margin="normal"
+                error={!!formErrors.genres}
+              >
                 <InputLabel id="genres-label">Genres</InputLabel>
                 <Select
                   labelId="genres-label"
@@ -336,7 +347,7 @@ const CreateFantasyMoviePage = () => {
                   value={genres}
                   onChange={handleGenreChange}
                   renderValue={(selected) => (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                       {selected.map((value) => (
                         <Chip key={value} label={value} />
                       ))}
@@ -349,9 +360,11 @@ const CreateFantasyMoviePage = () => {
                     </MenuItem>
                   ))}
                 </Select>
-                {formErrors.genres && <FormHelperText>{formErrors.genres}</FormHelperText>}
+                {formErrors.genres && (
+                  <FormHelperText>{formErrors.genres}</FormHelperText>
+                )}
               </FormControl>
-              
+
               <Grid container spacing={2} sx={{ mt: 1 }}>
                 <Grid item xs={12} sm={6}>
                   <TextField
@@ -382,12 +395,12 @@ const CreateFantasyMoviePage = () => {
                   />
                 </Grid>
               </Grid>
-              
+
               <Box sx={{ mt: 2, mb: 2 }}>
                 <Typography variant="subtitle1" gutterBottom>
                   Production Companies
                 </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                   <TextField
                     label="Add Production Company"
                     value={newCompany}
@@ -409,7 +422,7 @@ const CreateFantasyMoviePage = () => {
                 {formErrors.companies && companies.length === 0 && (
                   <FormHelperText error>{formErrors.companies}</FormHelperText>
                 )}
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
                   {companies.map((company) => (
                     <Chip
                       key={company}
@@ -422,8 +435,7 @@ const CreateFantasyMoviePage = () => {
                 </Box>
               </Box>
             </Grid>
-            
-            {/* Right column - Poster and cast */}
+
             <Grid item xs={12} md={4}>
               <Card sx={{ mb: 3 }}>
                 <CardContent>
@@ -432,25 +444,27 @@ const CreateFantasyMoviePage = () => {
                   </Typography>
                   <Box
                     sx={{
-                      width: '100%',
+                      width: "100%",
                       height: 300,
-                      backgroundColor: '#f5f5f5',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
+                      backgroundColor: "#f5f5f5",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                       mb: 2,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                      backgroundImage: posterPreview ? `url(${posterPreview})` : 'none'
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundImage: posterPreview
+                        ? `url(${posterPreview})`
+                        : "none",
                     }}
                   >
-                                       {!posterPreview && (
+                    {!posterPreview && (
                       <Typography variant="body2" color="text.secondary">
                         No poster selected
                       </Typography>
                     )}
                   </Box>
-                  
+
                   <Button
                     component="label"
                     variant="contained"
@@ -459,7 +473,7 @@ const CreateFantasyMoviePage = () => {
                     fullWidth
                     disabled={isUploading}
                   >
-                    {isUploading ? 'Uploading...' : 'Upload Poster'}
+                    {isUploading ? "Uploading..." : "Upload Poster"}
                     <input
                       type="file"
                       hidden
@@ -472,13 +486,18 @@ const CreateFantasyMoviePage = () => {
                   )}
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardContent>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                    <Typography variant="h6">
-                      Cast Members
-                    </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      mb: 2,
+                    }}
+                  >
+                    <Typography variant="h6">Cast Members</Typography>
                     <Button
                       size="small"
                       startIcon={<AddIcon />}
@@ -487,53 +506,64 @@ const CreateFantasyMoviePage = () => {
                       Add
                     </Button>
                   </Box>
-                  
+
                   {formErrors.cast && (
                     <Alert severity="error" sx={{ mb: 2 }}>
                       {formErrors.cast}
                     </Alert>
                   )}
-                  
+
                   {cast.map((member, index) => (
                     <Box key={index} sx={{ mb: 3 }}>
                       {index > 0 && <Divider sx={{ my: 2 }} />}
-                      
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          mb: 1,
+                        }}
+                      >
                         <Typography variant="subtitle1">
                           Cast Member #{index + 1}
                         </Typography>
-                        
+
                         {cast.length > 1 && (
-                          <IconButton 
-                            size="small" 
-                            color="error" 
+                          <IconButton
+                            size="small"
+                            color="error"
                             onClick={() => removeCastMember(index)}
                           >
                             <DeleteIcon />
                           </IconButton>
                         )}
                       </Box>
-                      
+
                       <TextField
                         label="Name"
                         fullWidth
                         size="small"
                         value={member.Name}
-                        onChange={(e) => updateCastMember(index, 'Name', e.target.value)}
+                        onChange={(e) =>
+                          updateCastMember(index, "Name", e.target.value)
+                        }
                         margin="dense"
                         required
                       />
-                      
+
                       <TextField
                         label="Role"
                         fullWidth
                         size="small"
                         value={member.Role}
-                        onChange={(e) => updateCastMember(index, 'Role', e.target.value)}
+                        onChange={(e) =>
+                          updateCastMember(index, "Role", e.target.value)
+                        }
                         margin="dense"
                         required
                       />
-                      
+
                       <TextField
                         label="Description"
                         fullWidth
@@ -541,7 +571,9 @@ const CreateFantasyMoviePage = () => {
                         multiline
                         rows={2}
                         value={member.Description}
-                        onChange={(e) => updateCastMember(index, 'Description', e.target.value)}
+                        onChange={(e) =>
+                          updateCastMember(index, "Description", e.target.value)
+                        }
                         margin="dense"
                       />
                     </Box>
@@ -550,24 +582,26 @@ const CreateFantasyMoviePage = () => {
               </Card>
             </Grid>
           </Grid>
-          
-          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'space-between' }}>
+
+          <Box sx={{ mt: 4, display: "flex", justifyContent: "space-between" }}>
             <Button
               variant="outlined"
-              onClick={() => navigate('/fantasy-movies')}
+              onClick={() => navigate("/fantasy-movies")}
               disabled={isSubmitting}
             >
               Cancel
             </Button>
-            
+
             <Button
               type="submit"
               variant="contained"
               color="error"
               disabled={isSubmitting || isUploading}
-              startIcon={isSubmitting && <CircularProgress size={20} color="inherit" />}
+              startIcon={
+                isSubmitting && <CircularProgress size={20} color="inherit" />
+              }
             >
-              {isSubmitting ? 'Creating...' : 'Create Fantasy Movie'}
+              {isSubmitting ? "Creating..." : "Create Fantasy Movie"}
             </Button>
           </Box>
         </Box>
@@ -577,4 +611,3 @@ const CreateFantasyMoviePage = () => {
 };
 
 export default CreateFantasyMoviePage;
-

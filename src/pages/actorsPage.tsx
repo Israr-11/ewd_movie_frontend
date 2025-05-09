@@ -1,12 +1,22 @@
-import { Typography, Grid, Card, CardMedia, CardContent, Box, CircularProgress, Alert, Chip, styled } from "@mui/material";
+import {
+  Typography,
+  Grid,
+  Card,
+  CardMedia,
+  CardContent,
+  Box,
+  CircularProgress,
+  Alert,
+  Chip,
+  styled,
+} from "@mui/material";
 import { Link } from "react-router-dom";
 import useActors from "../hooks/useActors";
-import img from '../images/film-poster-placeholder.png';
+import img from "../images/film-poster-placeholder.png";
 
-// Styled components for enhanced design
 const PageContainer = styled(Box)({
   padding: "2rem 1.5rem",
-  backgroundColor: "#0D0D0D", // Updated to match header/footer
+  backgroundColor: "#0D0D0D",
   minHeight: "calc(100vh - 180px)",
   marginBottom: "5rem",
 });
@@ -21,10 +31,10 @@ const PageTitle = styled(Typography)({
 });
 
 const ActorCard = styled(Card)({
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  backgroundColor: "#0D0D0D", // Updated to match header/footer
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
+  backgroundColor: "#0D0D0D",
   color: "#FFFFFF",
   borderRadius: "8px",
   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.5)",
@@ -57,7 +67,7 @@ const ActorsPage = () => {
 
   if (isLoading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
         <CircularProgress sx={{ color: "#E50914" }} />
       </Box>
     );
@@ -73,36 +83,42 @@ const ActorsPage = () => {
 
   return (
     <PageContainer>
-      <PageTitle variant="h4">
-        Popular Actors
-      </PageTitle>
-      
+      <PageTitle variant="h4">Popular Actors</PageTitle>
+
       <Grid container spacing={3}>
         {actors.map((actor) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={actor.id}>
-            <Link to={`/actors/${actor.id}`} style={{ textDecoration: 'none' }}>
+            <Link to={`/actors/${actor.id}`} style={{ textDecoration: "none" }}>
               <ActorCard>
                 <ActorImage
-                  image={actor.profile_path ? `https://image.tmdb.org/t/p/w500${actor.profile_path}` : img}
+                  image={
+                    actor.profile_path
+                      ? `https://image.tmdb.org/t/p/w500${actor.profile_path}`
+                      : img
+                  }
                   title={actor.name}
                 />
                 <CardContent>
                   <ActorName variant="h6" gutterBottom>
                     {actor.name}
                   </ActorName>
-                  <Chip 
-                    label={actor.known_for_department} 
-                    size="small" 
-                    sx={{ 
+                  <Chip
+                    label={actor.known_for_department}
+                    size="small"
+                    sx={{
                       backgroundColor: "rgba(229, 9, 20, 0.1)",
                       color: "#FFFFFF",
                       border: "1px solid rgba(229, 9, 20, 0.3)",
-                      mb: 1
-                    }} 
+                      mb: 1,
+                    }}
                   />
                   {actor.known_for && actor.known_for.length > 0 && (
                     <KnownFor variant="body2">
-                      Known for: {actor.known_for.map(item => item.title || item.name).slice(0, 2).join(', ')}
+                      Known for:{" "}
+                      {actor.known_for
+                        .map((item) => item.title || item.name)
+                        .slice(0, 2)
+                        .join(", ")}
                     </KnownFor>
                   )}
                 </CardContent>

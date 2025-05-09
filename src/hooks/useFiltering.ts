@@ -1,12 +1,12 @@
 import { useState } from "react";
 
 interface Filter {
-    name: string;
-    value: string;
-    condition: (item: any, value: string) => boolean;
-    }
+  name: string;
+  value: string;
+  condition: (item: any, value: string) => boolean;
+}
 
-const useFiltering = ( filters: Filter[]) => {
+const useFiltering = (filters: Filter[]) => {
   const [filterValues, setFilterValues] = useState(() => {
     const filterInitialValues = filters.map((f) => ({
       name: f.name,
@@ -19,7 +19,7 @@ const useFiltering = ( filters: Filter[]) => {
   const filterFunction = (collection: any) =>
     filteringConditions.reduce((data, conditionFn, index) => {
       return data.filter((item: any) => {
-          return conditionFn(item, filterValues[index].value);
+        return conditionFn(item, filterValues[index].value);
       });
     }, collection);
 

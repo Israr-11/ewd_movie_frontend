@@ -4,7 +4,7 @@ import { MovieDetailsProps } from '../types/interfaces'
 
 type MovieHookReturnType = [MovieDetailsProps | undefined, React.Dispatch<React.SetStateAction<MovieDetailsProps | undefined>>];
 
-const useMovie  = (id: string):MovieHookReturnType  => {
+const useMovie = (id: string): MovieHookReturnType => {
     const [movie, setMovie] = useState<MovieDetailsProps>();
     useEffect(() => {
         getMovie(id).then(movie => {

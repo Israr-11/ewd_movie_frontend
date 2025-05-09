@@ -8,29 +8,26 @@ import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { useNavigate } from "react-router-dom";
-import { styled } from '@mui/material/styles';
+import { styled } from "@mui/material/styles";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useAuth } from "../../contexts/authContext";
 
-// Update only the StyledAppBar and StyledToolbar components to adjust height and alignment
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: "#0D0D0D",
   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.5)",
   borderBottom: "1px solid #333333",
   left: "0.47%",
   width: "99.03%",
-  height: "8%", // Decreased from 10% to 8%
+  height: "8%",
 }));
 
 const StyledToolbar = styled(Toolbar)({
-  padding: "0rem", // Reduced padding
-  minHeight: "56px", // Set a smaller minimum height
-  display: "flex",
-  alignItems: "center", // Ensure vertical centering
+  padding: "0rem",
+  minHeight: "56px",
+  alignItems: "center",
 });
 
-// Also update the SiteLogo to ensure it aligns well with the reduced height
 const SiteLogo = styled(Typography)({
   flexGrow: 1,
   color: "#FFFFFF",
@@ -38,13 +35,11 @@ const SiteLogo = styled(Typography)({
   marginLeft: "20px",
   letterSpacing: "1px",
   textShadow: "0 0 10px rgba(229, 9, 20, 0.5)",
-  fontSize: "1.5rem", // Slightly smaller font size
+  fontSize: "1.5rem",
   "& span": {
     color: "#E50914",
-  }
+  },
 });
-
-
 
 const NavButton = styled(Button)({
   color: "#FFFFFF",
@@ -103,7 +98,7 @@ const MenuButton = styled(IconButton)({
   },
 });
 
-const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
+const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const SiteHeader = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -115,9 +110,9 @@ const SiteHeader = () => {
 
   const menuOptions = [
     { label: "Home", path: "/" },
-    { label: "Upcoming", path: "/movies/upcoming" },
     { label: "Actors", path: "/actors" },
     { label: "TV Series", path: "/tv" },
+    { label: "Upcoming", path: "/movies/upcoming" },
   ];
 
   const authenticatedOptions = [
@@ -126,8 +121,8 @@ const SiteHeader = () => {
     { label: "Fantasy Movies", path: "/fantasy-movies" },
   ];
 
-  const allOptions = isAuthenticated 
-    ? [...menuOptions, ...authenticatedOptions] 
+  const allOptions = isAuthenticated
+    ? [...menuOptions, ...authenticatedOptions]
     : menuOptions;
 
   const handleMenuSelect = (pageURL: string) => {
@@ -190,8 +185,14 @@ const SiteHeader = () => {
                   <StyledMenuItem onClick={handleLogout}>Logout</StyledMenuItem>
                 ) : (
                   <>
-                    <StyledMenuItem onClick={() => handleMenuSelect("/login")}>Login</StyledMenuItem>
-                    <StyledMenuItem onClick={() => handleMenuSelect("/register")}>Register</StyledMenuItem>
+                    <StyledMenuItem onClick={() => handleMenuSelect("/login")}>
+                      Login
+                    </StyledMenuItem>
+                    <StyledMenuItem
+                      onClick={() => handleMenuSelect("/register")}
+                    >
+                      Register
+                    </StyledMenuItem>
                   </>
                 )}
               </StyledMenu>
@@ -208,12 +209,8 @@ const SiteHeader = () => {
               ))}
               {isAuthenticated ? (
                 <>
-                  <UserEmail variant="body1">
-                    {userEmail}
-                  </UserEmail>
-                  <AuthButton onClick={handleLogout}>
-                    Logout
-                  </AuthButton>
+                  <UserEmail variant="body1">{userEmail}</UserEmail>
+                  <AuthButton onClick={handleLogout}>Logout</AuthButton>
                 </>
               ) : (
                 <>

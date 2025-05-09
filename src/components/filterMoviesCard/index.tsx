@@ -13,13 +13,12 @@ import { getGenres } from "../../api/tmdb-api";
 import { FilterOption, GenreData } from "../../types/interfaces";
 import { useQuery } from "react-query";
 import Spinner from "../spinner";
-import { 
-  FormControlLabel, 
-  FormGroup, 
-  Slider, 
-  Box, 
+import {
+  FormControlLabel,
+  Slider,
+  Box,
   Radio,
-  RadioGroup
+  RadioGroup,
 } from "@mui/material";
 
 const styles = {
@@ -35,7 +34,7 @@ const styles = {
   slider: {
     width: "90%",
     margin: "0 auto",
-  }
+  },
 };
 
 interface FilterMoviesCardProps {
@@ -55,8 +54,10 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({
   sortByFilter,
   onUserInput,
 }) => {
-  
-  const { data, error, isLoading, isError } = useQuery<GenreData, Error>("genres", getGenres);
+  const { data, error, isLoading, isError } = useQuery<GenreData, Error>(
+    "genres",
+    getGenres
+  );
 
   if (isLoading) {
     return <Spinner />;
@@ -69,7 +70,11 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({
     genres.unshift({ id: "0", name: "All" });
   }
 
-  const handleChange = (e: SelectChangeEvent | ChangeEvent<HTMLInputElement>, type: FilterOption, value: string) => {
+  const handleChange = (
+    e: SelectChangeEvent | ChangeEvent<HTMLInputElement>,
+    type: FilterOption,
+    value: string
+  ) => {
     e.preventDefault();
     onUserInput(type, value);
   };
@@ -94,9 +99,13 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({
     handleChange(e, "sortBy", e.target.value);
   };
 
-  // Generate year options from 1990 to current year
   const currentYear = new Date().getFullYear();
-  const years = ["All", ...Array.from({ length: currentYear - 1989 }, (_, i) => (currentYear - i).toString())];
+  const years = [
+    "All",
+    ...Array.from({ length: currentYear - 1989 }, (_, i) =>
+      (currentYear - i).toString()
+    ),
+  ];
 
   return (
     <>
@@ -175,7 +184,7 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({
             <SortIcon fontSize="large" />
             Sort the movies
           </Typography>
-          
+
           <FormControl component="fieldset" sx={{ mt: 2 }}>
             <RadioGroup
               aria-label="sort-by"
@@ -183,12 +192,36 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({
               value={sortByFilter || "popularity.desc"}
               onChange={handleSortByChange}
             >
-              <FormControlLabel value="popularity.desc" control={<Radio />} label="Popularity (Descending)" />
-              <FormControlLabel value="popularity.asc" control={<Radio />} label="Popularity (Ascending)" />
-              <FormControlLabel value="vote_average.desc" control={<Radio />} label="Rating (Descending)" />
-              <FormControlLabel value="vote_average.asc" control={<Radio />} label="Rating (Ascending)" />
-              <FormControlLabel value="release_date.desc" control={<Radio />} label="Release Date (Newest)" />
-              <FormControlLabel value="release_date.asc" control={<Radio />} label="Release Date (Oldest)" />
+              <FormControlLabel
+                value="popularity.desc"
+                control={<Radio />}
+                label="Popularity (Descending)"
+              />
+              <FormControlLabel
+                value="popularity.asc"
+                control={<Radio />}
+                label="Popularity (Ascending)"
+              />
+              <FormControlLabel
+                value="vote_average.desc"
+                control={<Radio />}
+                label="Rating (Descending)"
+              />
+              <FormControlLabel
+                value="vote_average.asc"
+                control={<Radio />}
+                label="Rating (Ascending)"
+              />
+              <FormControlLabel
+                value="release_date.desc"
+                control={<Radio />}
+                label="Release Date (Newest)"
+              />
+              <FormControlLabel
+                value="release_date.asc"
+                control={<Radio />}
+                label="Release Date (Oldest)"
+              />
             </RadioGroup>
           </FormControl>
         </CardContent>

@@ -1,5 +1,4 @@
-
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta } from '@storybook/react';
 import MovieList from "../components/movieList";
 import SampleMovie from "./sampleData";
 import { MemoryRouter } from "react-router";
@@ -7,7 +6,7 @@ import { MemoryRouter } from "react-router";
 import AddToFavouritesIcon from "../components/cardIcons/addToFavourites";
 import Grid from "@mui/material/Grid";
 import MoviesContextProvider from "../contexts/moviesContext";
-
+import { BaseMovieProps } from '../types/interfaces';
 
 const meta = {
   title: "Home Page/MovieList",
@@ -22,13 +21,20 @@ export default meta;
 
 
 export const Basic = () => {
-  const movies = [
-    { ...SampleMovie, id: 1 },
-    { ...SampleMovie, id: 2 },
-    { ...SampleMovie, id: 3 },
-    { ...SampleMovie, id: 4 },
-    { ...SampleMovie, id: 5 },
+  const sampleMovieAsBaseProps = {
+    ...SampleMovie,
+    isError: false,
+    movie: SampleMovie
+  } as BaseMovieProps;
+
+  const movies: BaseMovieProps[] = [
+    { ...sampleMovieAsBaseProps, id: 1 },
+    { ...sampleMovieAsBaseProps, id: 2 },
+    { ...sampleMovieAsBaseProps, id: 3 },
+    { ...sampleMovieAsBaseProps, id: 4 },
+    { ...sampleMovieAsBaseProps, id: 5 },
   ];
+
   return (
     <Grid container spacing={5}>
       <MovieList
@@ -39,5 +45,3 @@ export const Basic = () => {
   );
 };
 Basic.storyName = "Default";
-
-

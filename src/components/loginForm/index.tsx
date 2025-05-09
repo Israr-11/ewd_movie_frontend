@@ -1,39 +1,37 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../../contexts/authContext';
-import { 
-  Box, 
-  TextField, 
-  Button, 
-  Typography, 
-  Paper, 
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../../contexts/authContext";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Paper,
   Container,
-  Alert
-} from '@mui/material';
+  Alert,
+} from "@mui/material";
 
 const LoginForm: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [formError, setFormError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [formError, setFormError] = useState("");
   const { login, error } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormError('');
+    setFormError("");
 
-    // Basic validation
     if (!email || !password) {
-      setFormError('Email and password are required');
+      setFormError("Email and password are required");
       return;
     }
 
     try {
       await login(email, password);
-      navigate('/'); // Redirect to home page after successful login
+      navigate("/");
     } catch (err) {
-      // Error is already handled in the auth context
-      console.error('Login error:', err);
+      console.error("Login error:", err);
     }
   };
 
@@ -43,13 +41,13 @@ const LoginForm: React.FC = () => {
         <Typography variant="h4" component="h1" gutterBottom align="center">
           Login
         </Typography>
-        
+
         {(error || formError) && (
           <Alert severity="error" sx={{ mb: 2 }}>
             {formError || error}
           </Alert>
         )}
-        
+
         <Box component="form" onSubmit={handleSubmit} noValidate>
           <TextField
             margin="normal"
@@ -86,8 +84,7 @@ const LoginForm: React.FC = () => {
           </Button>
           <Box textAlign="center">
             <Typography variant="body2">
-              Don't have an account?{' '}
-              <Link to="/register">Register</Link>
+              Don't have an account? <Link to="/register">Register</Link>
             </Typography>
           </Box>
         </Box>

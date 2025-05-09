@@ -12,25 +12,24 @@ const AddToPlaylist: React.FC<BaseMovieProps> = ({ ...movie }) => {
 
   const handleClick = () => {
     if (!isAuthenticated()) {
-      // Redirect to login if not authenticated
       navigate("/login");
       return;
     }
-    
+
     setModalOpen(true);
   };
 
   return (
     <>
-      <Button 
-        variant="contained" 
+      <Button
+        variant="contained"
         color="error"
         startIcon={<PlaylistAddIcon />}
         onClick={handleClick}
       >
         Add to Playlist
       </Button>
-      
+
       {modalOpen && (
         <PlaylistModal
           open={modalOpen}

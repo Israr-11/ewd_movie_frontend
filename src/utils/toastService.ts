@@ -1,23 +1,13 @@
-/**
- * Simple Notification Service
- * 
- * Creates notifications that appear on the top right side of the screen
- * and automatically disappear after 3 seconds.
- */
 
-// Initialize notification container
 const initContainer = (): HTMLDivElement => {
-  // First, remove any existing container to start fresh
   const existingContainer = document.getElementById('notification-container');
   if (existingContainer) {
     document.body.removeChild(existingContainer);
   }
-  
-  // Create a new container
+
   const container = document.createElement('div');
   container.id = 'notification-container';
-  
-  // Set styles directly
+
   Object.assign(container.style, {
     position: 'fixed',
     top: '70px',
@@ -28,19 +18,16 @@ const initContainer = (): HTMLDivElement => {
     alignItems: 'flex-end',
     pointerEvents: 'none'
   });
-  
+
   document.body.appendChild(container);
   return container;
 };
 
-// Create and show a notification
 const showNotification = (message: string, type: 'success' | 'error' | 'info' | 'warning'): void => {
   const container = initContainer();
-  
-  // Create notification element
+
   const notification = document.createElement('div');
-  
-  // Set styles directly
+
   Object.assign(notification.style, {
     padding: '12px 16px',
     borderRadius: '4px',
@@ -53,8 +40,7 @@ const showNotification = (message: string, type: 'success' | 'error' | 'info' | 
     transition: 'opacity 0.3s, transform 0.3s',
     transform: 'translateY(-20px)'
   });
-  
-  // Set background color based on type
+
   switch (type) {
     case 'success':
       notification.style.backgroundColor = '#4caf50';
@@ -69,24 +55,20 @@ const showNotification = (message: string, type: 'success' | 'error' | 'info' | 
       notification.style.backgroundColor = '#ff9800';
       break;
   }
-  
+
   notification.textContent = message;
-  
-  // Add to container
+
   container.appendChild(notification);
-  
-  // Trigger animation
+
   setTimeout(() => {
     notification.style.opacity = '1';
     notification.style.transform = 'translateY(0)';
   }, 10);
-  
-  // Remove after 3 seconds
+
   setTimeout(() => {
     notification.style.opacity = '0';
     notification.style.transform = 'translateY(-20px)';
-    
-    // Remove from DOM after transition
+
     setTimeout(() => {
       if (container.contains(notification)) {
         container.removeChild(notification);
@@ -95,7 +77,6 @@ const showNotification = (message: string, type: 'success' | 'error' | 'info' | 
   }, 3000);
 };
 
-// Notification functions
 export const showSuccess = (message: string): void => {
   console.log('✅ Success:', message);
   showNotification(message, 'success');
@@ -116,7 +97,6 @@ export const showWarning = (message: string): void => {
   showNotification(message, 'warning');
 };
 
-// Default export for convenience
 const notificationService = {
   success: showSuccess,
   error: showError,

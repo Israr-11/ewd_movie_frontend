@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { 
-  Typography, 
-  Container, 
-  Grid, 
-  Box, 
-  CircularProgress, 
-  Alert, 
+import {
+  Typography,
+  Container,
+  Grid,
+  Box,
+  CircularProgress,
+  Alert,
   Button,
   Card,
   CardMedia,
@@ -14,7 +14,7 @@ import {
   CardActions,
   styled,
   Paper,
-  Chip
+  Chip,
 } from "@mui/material";
 import { PlaylistContext } from "../contexts/playlistContext";
 import { isAuthenticated } from "../utils/auth";
@@ -24,16 +24,14 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import UpdateIcon from "@mui/icons-material/Update";
 import MovieIcon from "@mui/icons-material/Movie";
-import img from '../images/film-poster-placeholder.png';
+import img from "../images/film-poster-placeholder.png";
 
-// Define the structure of a movie in the playlist
 interface PlaylistMovie {
   Order: number;
   AddedDate: string;
   MovieId: number;
 }
 
-// Styled components for enhanced design
 const PageContainer = styled(Container)({
   marginTop: "2rem",
   marginBottom: "5rem",
@@ -96,9 +94,9 @@ const ActionButton = styled(Button)({
 });
 
 const MovieCard = styled(Card)({
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
   backgroundColor: "#1A1A1A",
   color: "#FFFFFF",
   borderRadius: "8px",
@@ -145,14 +143,18 @@ const PlaylistDetailsPage = () => {
   const { id } = useParams();
   const playlistId = Number(id);
   const navigate = useNavigate();
-  const { playlists, isLoading: playlistsLoading, error: playlistsError, loadPlaylists } = useContext(PlaylistContext);
+  const {
+    playlists,
+    isLoading: playlistsLoading,
+    error: playlistsError,
+    loadPlaylists,
+  } = useContext(PlaylistContext);
   const [playlist, setPlaylist] = useState<any>(null);
   const [movies, setMovies] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const hasLoadedRef = useRef(false);
 
-  // Check authentication and load playlists
   useEffect(() => {
     if (!isAuthenticated()) {
       navigate("/login", { replace: true });
@@ -165,41 +167,42 @@ const PlaylistDetailsPage = () => {
     }
   }, [navigate]);
 
-  // Find the current playlist from the loaded playlists
   useEffect(() => {
     if (!playlistsLoading && playlists.length > 0) {
-      const currentPlaylist = playlists.find(p => p.Id === playlistId);
+      const currentPlaylist = playlists.find((p) => p.Id === playlistId);
       if (currentPlaylist) {
         setPlaylist(currentPlaylist);
-        
-        // Check if Movies exists and is an array
-        if (Array.isArray(currentPlaylist.Movies) && currentPlaylist.Movies.length > 0) {
-          // Fetch movie details one by one
+
+        if (
+          Array.isArray(currentPlaylist.Movies) &&
+          currentPlaylist.Movies.length > 0
+        ) {
           const fetchMovies = async () => {
             setIsLoading(true);
-            
-            // Extract movie IDs from the Movies array
-            const moviePromises = currentPlaylist.Movies.map(async (movieItem: PlaylistMovie | number) => {
-              // Handle both formats: object with MovieId or direct number
-              const movieId = typeof movieItem === 'object' ? movieItem.MovieId : movieItem;
-              
-              try {
-                console.log(`Fetching movie with ID: ${movieId}`);
-                const movieData = await getMovie(movieId.toString());
-                return movieData;
-              } catch (err) {
-                console.error(`Failed to fetch movie ${movieId}:`, err);
-                return null;
+
+            const moviePromises = currentPlaylist.Movies.map(
+              async (movieItem: PlaylistMovie | number) => {
+                const movieId =
+                  typeof movieItem === "object" ? movieItem.MovieId : movieItem;
+
+                try {
+                  console.log(`Fetching movie with ID: ${movieId}`);
+                  const movieData = await getMovie(movieId.toString());
+                  return movieData;
+                } catch (err) {
+                  console.error(`Failed to fetch movie ${movieId}:`, err);
+                  return null;
+                }
               }
-            });
-            
+            );
+
             const movieResults = await Promise.all(moviePromises);
-            const validMovies = movieResults.filter(movie => movie !== null);
+            const validMovies = movieResults.filter((movie) => movie !== null);
             console.log(`Successfully loaded ${validMovies.length} movies`);
             setMovies(validMovies);
             setIsLoading(false);
           };
-          
+
           fetchMovies();
         } else {
           console.log("No movies in playlist or Movies is not an array");
@@ -223,7 +226,12 @@ const PlaylistDetailsPage = () => {
 
   if (isLoading || playlistsLoading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="60vh"
+      >
         <CircularProgress sx={{ color: "#E50914" }} />
       </Box>
     );
@@ -235,9 +243,9 @@ const PlaylistDetailsPage = () => {
         <Alert severity="error" sx={{ mb: 2 }}>
           {error || playlistsError}
         </Alert>
-        <BackButton 
-          variant="outlined" 
-          startIcon={<ArrowBackIcon />} 
+        <BackButton
+          variant="outlined"
+          startIcon={<ArrowBackIcon />}
           onClick={handleBackToPlaylists}
         >
           Back to Playlists
@@ -249,12 +257,10 @@ const PlaylistDetailsPage = () => {
   if (!playlist) {
     return (
       <PageContainer maxWidth="md">
-        <Alert severity="warning">
-          Playlist not found
-        </Alert>
-        <BackButton 
-          variant="outlined" 
-          startIcon={<ArrowBackIcon />} 
+        <Alert severity="warning">Playlist not found</Alert>
+        <BackButton
+          variant="outlined"
+          startIcon={<ArrowBackIcon />}
           onClick={handleBackToPlaylists}
           sx={{ mt: 2 }}
         >
@@ -264,32 +270,28 @@ const PlaylistDetailsPage = () => {
     );
   }
 
-  // Calculate the number of movies in the playlist
-  const movieCount = Array.isArray(playlist.Movies) ? playlist.Movies.length : 0;
+  const movieCount = Array.isArray(playlist.Movies)
+    ? playlist.Movies.length
+    : 0;
 
   return (
     <PageContainer maxWidth="lg">
       <HeaderPaper elevation={3}>
         <Box display="flex" justifyContent="space-between" mb={3}>
-          <BackButton 
-            variant="outlined" 
-            startIcon={<ArrowBackIcon />} 
+          <BackButton
+            variant="outlined"
+            startIcon={<ArrowBackIcon />}
             onClick={handleBackToPlaylists}
           >
             Back to Playlists
           </BackButton>
-          
-          <ActionButton 
-            variant="contained" 
-            onClick={handleBackToUpcoming}
-          >
+
+          <ActionButton variant="contained" onClick={handleBackToUpcoming}>
             Browse Upcoming Movies
           </ActionButton>
         </Box>
 
-        <PageTitle variant="h4">
-          {playlist.Title}
-        </PageTitle>
+        <PageTitle variant="h4">{playlist.Title}</PageTitle>
 
         {playlist.Description && (
           <Description variant="body1" paragraph>
@@ -298,20 +300,21 @@ const PlaylistDetailsPage = () => {
         )}
 
         <Box sx={{ mt: 2 }}>
-          <InfoChip 
-            icon={<MovieIcon />} 
-            label={`${movieCount} movies`} 
-          />
+          <InfoChip icon={<MovieIcon />} label={`${movieCount} movies`} />
           {playlist.CreatedDate && (
-            <InfoChip 
-              icon={<CalendarTodayIcon />} 
-              label={`Created: ${new Date(playlist.CreatedDate).toLocaleDateString()}`} 
+            <InfoChip
+              icon={<CalendarTodayIcon />}
+              label={`Created: ${new Date(
+                playlist.CreatedDate
+              ).toLocaleDateString()}`}
             />
           )}
           {playlist.UpdatedDate && (
-            <InfoChip 
-              icon={<UpdateIcon />} 
-              label={`Updated: ${new Date(playlist.UpdatedDate).toLocaleDateString()}`} 
+            <InfoChip
+              icon={<UpdateIcon />}
+              label={`Updated: ${new Date(
+                playlist.UpdatedDate
+              ).toLocaleDateString()}`}
             />
           )}
         </Box>
@@ -325,10 +328,7 @@ const PlaylistDetailsPage = () => {
           <Typography variant="body2" sx={{ color: "#CCCCCC", mb: 3 }}>
             Add movies to this playlist from the movie details page
           </Typography>
-          <ActionButton 
-            variant="contained" 
-            onClick={handleBackToUpcoming}
-          >
+          <ActionButton variant="contained" onClick={handleBackToUpcoming}>
             Browse Upcoming Movies
           </ActionButton>
         </EmptyStateBox>
@@ -353,12 +353,14 @@ const PlaylistDetailsPage = () => {
                   </MovieTitle>
                   <MovieInfo variant="body2">
                     {movie.release_date?.substring(0, 4)}
-                    {movie.vote_average ? ` • ${movie.vote_average.toFixed(1)}/10` : ''}
+                    {movie.vote_average
+                      ? ` • ${movie.vote_average.toFixed(1)}/10`
+                      : ""}
                   </MovieInfo>
                 </CardContent>
                 <CardActions>
-                  <WatchButton 
-                    size="small" 
+                  <WatchButton
+                    size="small"
                     variant="contained"
                     onClick={() => navigate(`/movies/${movie.id}`)}
                     fullWidth
@@ -369,7 +371,8 @@ const PlaylistDetailsPage = () => {
                 </CardActions>
               </MovieCard>
             </Grid>
-          ))}        </Grid>
+          ))}{" "}
+        </Grid>
       )}
     </PageContainer>
   );

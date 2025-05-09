@@ -6,10 +6,8 @@ import MoviesContextProvider from '../contexts/moviesContext';
 import { AuthProvider } from '../contexts/authContext';
 import { Card, CardContent, CardMedia, Typography, Box, Chip, Button } from '@mui/material';
 
-// Create a new QueryClient for the stories
 const queryClient = new QueryClient();
 
-// Sample fantasy movie data
 const sampleFantasyMovie = {
   Id: 1,
   UserId: 'user123',
@@ -28,7 +26,6 @@ const sampleFantasyMovie = {
   CreatedDate: '2023-05-15'
 };
 
-// Fantasy Movie Card Component for the story
 const FantasyMovieCard = ({ movie }: { movie: { 
   Id: number;
   UserId: string;
@@ -100,14 +97,12 @@ const meta: Meta<typeof FantasyMovieCard> = {
 export default meta;
 type Story = StoryObj<typeof FantasyMovieCard>;
 
-// Basic fantasy movie card story
 export const Basic: Story = {
   args: {
     movie: sampleFantasyMovie,
   },
 };
 
-// Fantasy movie with many genres
 export const ManyGenres: Story = {
   args: {
     movie: {
@@ -117,7 +112,6 @@ export const ManyGenres: Story = {
   },
 };
 
-// Fantasy movie with long title and overview
 export const LongContent: Story = {
   args: {
     movie: {

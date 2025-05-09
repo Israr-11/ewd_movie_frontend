@@ -2,7 +2,6 @@ import { getIdToken } from '../utils/auth';
 
 const API_URL = import.meta.env.VITE_API_ENDPOINT || 'https://p68l7lqe8e.execute-api.us-east-1.amazonaws.com/prod';
 
-// Types
 export interface CastMember {
   Name: string;
   Role: string;
@@ -23,18 +22,17 @@ export interface FantasyMovie {
   CreatedDate?: string;
 }
 
-// Get presigned URL for image upload
 export const getPresignedUrl = async (fileType: string): Promise<{
   uploadUrl: string;
   key: string;
   publicUrl: string;
 }> => {
   const token = getIdToken();
-  
+
   if (!token) {
     throw new Error('User not authenticated');
   }
-  
+
   const response = await fetch(`${API_URL}/api/uploads/presigned-url`, {
     method: 'POST',
     headers: {
@@ -43,16 +41,15 @@ export const getPresignedUrl = async (fileType: string): Promise<{
     },
     body: JSON.stringify({ fileType })
   });
-  
+
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.message || `Failed to get presigned URL: ${response.status}`);
   }
-  
+
   return response.json();
 };
 
-// Upload image to S3 using presigned URL
 export const uploadImageToS3 = async (uploadUrl: string, file: File): Promise<void> => {
   const response = await fetch(uploadUrl, {
     method: 'PUT',
@@ -61,20 +58,19 @@ export const uploadImageToS3 = async (uploadUrl: string, file: File): Promise<vo
     },
     body: file
   });
-  
+
   if (!response.ok) {
     throw new Error(`Failed to upload image: ${response.status}`);
   }
 };
 
-// Create a fantasy movie
 export const createFantasyMovie = async (movieData: FantasyMovie): Promise<FantasyMovie> => {
   const token = getIdToken();
-  
+
   if (!token) {
     throw new Error('User not authenticated');
   }
-  
+
   const response = await fetch(`${API_URL}/api/fantasy-movies`, {
     method: 'POST',
     headers: {
@@ -83,67 +79,64 @@ export const createFantasyMovie = async (movieData: FantasyMovie): Promise<Fanta
     },
     body: JSON.stringify(movieData)
   });
-  
+
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.message || `Failed to create fantasy movie: ${response.status}`);
   }
-  
+
   return response.json();
 };
 
-// Get user's fantasy movies
 export const getUserFantasyMovies = async (): Promise<FantasyMovie[]> => {
   const token = getIdToken();
-  
+
   if (!token) {
     throw new Error('User not authenticated');
   }
-  
+
   const response = await fetch(`${API_URL}/api/fantasy-movies`, {
     headers: {
       'Authorization': `Bearer ${token}`
     }
   });
-  
+
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.message || `Failed to get fantasy movies: ${response.status}`);
   }
-  
+
   return response.json();
 };
 
-// Get a single fantasy movie by ID
 export const getFantasyMovie = async (id: number): Promise<FantasyMovie> => {
   const token = getIdToken();
-  
+
   if (!token) {
     throw new Error('User not authenticated');
   }
-  
+
   const response = await fetch(`${API_URL}/api/fantasy-movies/${id}`, {
     headers: {
       'Authorization': `Bearer ${token}`
     }
   });
-  
+
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.message || `Failed to get fantasy movie: ${response.status}`);
   }
-  
+
   return response.json();
 };
 
-// Add cast member to fantasy movie
 export const addCastMember = async (movieId: number, castMember: CastMember): Promise<FantasyMovie> => {
   const token = getIdToken();
-  
+
   if (!token) {
     throw new Error('User not authenticated');
   }
-  
+
   const response = await fetch(`${API_URL}/api/fantasy-movies/${movieId}/cast`, {
     method: 'POST',
     headers: {
@@ -152,34 +145,33 @@ export const addCastMember = async (movieId: number, castMember: CastMember): Pr
     },
     body: JSON.stringify(castMember)
   });
-  
+
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.message || `Failed to add cast member: ${response.status}`);
   }
-  
+
   return response.json();
 };
 
-// Delete a fantasy movie
 export const deleteFantasyMovie = async (id: number): Promise<{ message: string }> => {
   const token = getIdToken();
-  
+
   if (!token) {
     throw new Error('User not authenticated');
   }
-  
+
   const response = await fetch(`${API_URL}/api/fantasy-movies/${id}`, {
     method: 'DELETE',
     headers: {
       'Authorization': `Bearer ${token}`
     }
   });
-  
+
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.message || `Failed to delete fantasy movie: ${response.status}`);
   }
-  
+
   return response.json();
 };

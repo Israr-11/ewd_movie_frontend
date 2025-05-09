@@ -2,14 +2,13 @@ import { getIdToken } from '../utils/auth';
 
 const API_URL = import.meta.env.VITE_API_ENDPOINT || 'https://p68l7lqe8e.execute-api.us-east-1.amazonaws.com/prod/';
 
-// Add a movie to favorites
 export const addToFavorites = async (movieId: number): Promise<any> => {
   const token = getIdToken();
-  
+
   if (!token) {
     throw new Error('User not authenticated');
   }
-  
+
   const response = await fetch(`${API_URL}/api/favorites`, {
     method: 'POST',
     headers: {
@@ -20,70 +19,66 @@ export const addToFavorites = async (movieId: number): Promise<any> => {
       movieId
     })
   });
-  
+
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.message || `Failed to add movie to favorites: ${response.status}`);
   }
-  
+
   return response.json();
 };
 
 export const getFavorites = async (): Promise<any> => {
   const token = getIdToken();
-  
+
   if (!token) {
     throw new Error('User not authenticated');
   }
-  
+
   const response = await fetch(`${API_URL}/api/favorites`, {
     headers: {
       'Authorization': `Bearer ${token}`
     }
   });
-  
+
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.message || `Failed to fetch favorites: ${response.status}`);
   }
-  
-  // The response should be an array of objects with MovieId, UserId, AddedDate, and Order
   return response.json();
 };
 
 
-// Remove a movie from favorites
 export const removeFromFavorites = async (movieId: number): Promise<any> => {
   const token = getIdToken();
-  
+
   if (!token) {
     throw new Error('User not authenticated');
   }
-  
+
   const response = await fetch(`${API_URL}/api/favorites/${movieId}`, {
     method: 'DELETE',
     headers: {
       'Authorization': `Bearer ${token}`
     }
   });
-  
+
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.message || `Failed to remove movie from favorites: ${response.status}`);
   }
-  
+
   return response.json();
 };
 
 
-// Reorder favorite movies (not implemented in the original code)
-export const reorderFavorites = async (newOrder: {movieId: number, order: number}[]): Promise<any> => {
+export const reorderFavorites = async (newOrder: { movieId: number, order: number }[]): Promise<any> => {
   const token = getIdToken();
-  
+
   if (!token) {
     throw new Error('User not authenticated');
   }
-  
+
   const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/api/favorites/reorder`, {
     method: 'PUT',
     headers: {
@@ -92,11 +87,11 @@ export const reorderFavorites = async (newOrder: {movieId: number, order: number
     },
     body: JSON.stringify({ newOrder })
   });
-  
+
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.message || `Failed to reorder favorites: ${response.status}`);
   }
-  
+
   return response.json();
 };

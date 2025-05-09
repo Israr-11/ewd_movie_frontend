@@ -8,7 +8,6 @@ import {
   Typography, 
   Box, 
   Rating, 
-  Divider, 
   CircularProgress, 
   Alert,
   Paper
@@ -16,7 +15,6 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { getUserReviews } from '../../api/review-api';
 import { getMovie } from '../../api/tmdb-api';
-import { useQuery } from 'react-query';
 
 interface ReviewsModalProps {
   open: boolean;
@@ -43,8 +41,6 @@ const ReviewsModal: React.FC<ReviewsModalProps> = ({ open, onClose }) => {
     const [reviews, setReviews] = useState<ReviewWithMovie[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    console.log("ReviewsModal opened:", open, userId);
-    // Fetch reviews when the modal opens
     useEffect(() => {
       if (open && userId) {
         fetchReviews();
@@ -62,18 +58,14 @@ const ReviewsModal: React.FC<ReviewsModalProps> = ({ open, onClose }) => {
         setIsLoading(true);
         setError(null);
         
-        console.log("Fetching reviews for user:", userId);
         const reviewsData = await getUserReviews(userId);
-        console.log("Reviews data received:", reviewsData);
         
         if (!reviewsData || reviewsData.length === 0) {
-          console.log("No reviews found for user");
           setReviews([]);
           setIsLoading(false);
           return;
         }
         
-        // Fetch movie titles for each review
         const reviewsWithMovies = await Promise.all(
           reviewsData.map(async (review: Review) => {
             try {
@@ -92,7 +84,6 @@ const ReviewsModal: React.FC<ReviewsModalProps> = ({ open, onClose }) => {
           })
         );
         
-        console.log("Reviews with movies:", reviewsWithMovies);
         setReviews(reviewsWithMovies);
       } catch (err) {
         console.error("Failed to fetch reviews:", err);

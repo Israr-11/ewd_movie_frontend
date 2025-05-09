@@ -17,7 +17,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 export const Basic: Story = {
     args: {
-        ...SampleMovie
+        ...SampleMovie,
+        images: {},
+        isError: false,
+        movie: {}
     }
-};
-Basic.storyName = "Default";
+};Basic.storyName = "Default";

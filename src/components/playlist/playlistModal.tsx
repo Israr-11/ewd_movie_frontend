@@ -1,25 +1,25 @@
-import React, { useState, useContext, useEffect, useRef } from 'react';
-import { 
-  Dialog, 
-  DialogTitle, 
-  DialogContent, 
-  DialogActions, 
-  Button, 
-  TextField, 
-  List, 
-  ListItem, 
-  ListItemText, 
-  ListItemButton, 
-  Divider, 
-  Typography, 
-  Box, 
-  CircularProgress, 
-  Tab, 
-  Tabs
-} from '@mui/material';
-import { PlaylistContext } from '../../contexts/playlistContext';
-import { BaseMovieProps } from '../../types/interfaces';
-import toast from '../../utils/toastService';
+import React, { useState, useContext, useEffect, useRef } from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemButton,
+  Divider,
+  Typography,
+  Box,
+  CircularProgress,
+  Tab,
+  Tabs,
+} from "@mui/material";
+import { PlaylistContext } from "../../contexts/playlistContext";
+import { BaseMovieProps } from "../../types/interfaces";
+import toast from "../../utils/toastService";
 
 interface PlaylistModalProps {
   open: boolean;
@@ -27,22 +27,30 @@ interface PlaylistModalProps {
   movie: BaseMovieProps;
 }
 
-const PlaylistModal: React.FC<PlaylistModalProps> = ({ open, onClose, movie }) => {
-  const { playlists, isLoading, createNewPlaylist, addToPlaylist, loadPlaylists } = useContext(PlaylistContext);
+const PlaylistModal: React.FC<PlaylistModalProps> = ({
+  open,
+  onClose,
+  movie,
+}) => {
+  const {
+    playlists,
+    isLoading,
+    createNewPlaylist,
+    addToPlaylist,
+    loadPlaylists,
+  } = useContext(PlaylistContext);
   const [tabValue, setTabValue] = useState(0);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const hasLoadedRef = useRef(false); // Use ref to track if we've loaded playlists
+  const hasLoadedRef = useRef(false);
 
-  // Load playlists only once when modal opens
   useEffect(() => {
     if (open && !hasLoadedRef.current) {
       loadPlaylists();
       hasLoadedRef.current = true;
     }
-    
-    // Reset the ref when modal closes
+
     if (!open) {
       hasLoadedRef.current = false;
     }
@@ -54,25 +62,22 @@ const PlaylistModal: React.FC<PlaylistModalProps> = ({ open, onClose, movie }) =
 
   const handleCreatePlaylist = async () => {
     if (!title.trim()) {
-      toast.error('Please enter a playlist title');
+      toast.error("Please enter a playlist title");
       return;
     }
 
     try {
       setIsSubmitting(true);
       const newPlaylist = await createNewPlaylist(title, description);
-      
-      // Add the movie to the newly created playlist
+
       await addToPlaylist(newPlaylist.Id, movie.id);
-      
-      // Reset form
-      setTitle('');
-      setDescription('');
-      
-      // Close modal
+
+      setTitle("");
+      setDescription("");
+
       onClose();
     } catch (error) {
-      console.error('Error creating playlist:', error);
+      console.error("Error creating playlist:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -84,39 +89,39 @@ const PlaylistModal: React.FC<PlaylistModalProps> = ({ open, onClose, movie }) =
       await addToPlaylist(playlistId, movie.id);
       onClose();
     } catch (error) {
-      console.error('Error adding to playlist:', error);
+      console.error("Error adding to playlist:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <Dialog 
-      open={open} 
-      onClose={onClose} 
-      maxWidth="sm" 
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
       fullWidth
-      // Add this to prevent re-renders from causing flicker
       TransitionProps={{
         onExited: () => {
-          // Reset form state when dialog is fully closed
-          setTitle('');
-          setDescription('');
+          setTitle("");
+          setDescription("");
           setTabValue(0);
-        }
+        },
       }}
     >
-      <DialogTitle>
-        Add "{movie.title}" to Playlist
-      </DialogTitle>
-      
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={tabValue} onChange={handleTabChange} aria-label="playlist options">
+      <DialogTitle>Add "{movie.title}" to Playlist</DialogTitle>
+
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Tabs
+          value={tabValue}
+          onChange={handleTabChange}
+          aria-label="playlist options"
+        >
           <Tab label="Add to Existing Playlist" />
           <Tab label="Create New Playlist" />
         </Tabs>
       </Box>
-      
+
       <DialogContent>
         {tabValue === 0 && (
           <>
@@ -133,15 +138,20 @@ const PlaylistModal: React.FC<PlaylistModalProps> = ({ open, onClose, movie }) =
                 {playlists.map((playlist) => (
                   <React.Fragment key={playlist.Id}>
                     <ListItem disablePadding>
-                      <ListItemButton 
+                      <ListItemButton
                         onClick={() => handleAddToExistingPlaylist(playlist.Id)}
-                        disabled={isSubmitting || (playlist.Movies && playlist.Movies.includes(movie.id))}
+                        disabled={
+                          isSubmitting ||
+                          (playlist.Movies &&
+                            playlist.Movies.includes(movie.id))
+                        }
                       >
-                        <ListItemText 
-                          primary={playlist.Title} 
+                        <ListItemText
+                          primary={playlist.Title}
                           secondary={
-                            playlist.Movies && playlist.Movies.includes(movie.id) 
-                              ? "This movie is already in this playlist" 
+                            playlist.Movies &&
+                            playlist.Movies.includes(movie.id)
+                              ? "This movie is already in this playlist"
                               : playlist.Description || "No description"
                           }
                         />
@@ -154,7 +164,7 @@ const PlaylistModal: React.FC<PlaylistModalProps> = ({ open, onClose, movie }) =
             )}
           </>
         )}
-        
+
         {tabValue === 1 && (
           <Box component="form" sx={{ mt: 2 }}>
             <TextField
@@ -185,15 +195,15 @@ const PlaylistModal: React.FC<PlaylistModalProps> = ({ open, onClose, movie }) =
           </Box>
         )}
       </DialogContent>
-      
+
       <DialogActions sx={{ px: 3, pb: 2 }}>
         <Button onClick={onClose} color="inherit" disabled={isSubmitting}>
           Cancel
         </Button>
         {tabValue === 1 && (
-          <Button 
-            onClick={handleCreatePlaylist} 
-            variant="contained" 
+          <Button
+            onClick={handleCreatePlaylist}
+            variant="contained"
             color="error"
             disabled={isSubmitting || !title.trim()}
           >

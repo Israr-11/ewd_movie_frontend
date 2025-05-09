@@ -1,27 +1,25 @@
-import React, { useState } from "react";
-import { 
-  Typography, 
-  Grid, 
-  Box, 
-  Card, 
-  CardMedia, 
-  CardContent, 
-  Chip, 
-  Rating, 
+import React from "react";
+import {
+  Typography,
+  Grid,
+  Box,
+  Card,
+  CardMedia,
+  CardContent,
+  Chip,
+  Rating,
   Divider,
   styled,
   ImageList,
   ImageListItem,
-  Button
 } from "@mui/material";
 import { MovieDetailsProps } from "../../types/interfaces";
-import img from '../../images/film-poster-placeholder.png';
-import AddToFavouritesIcon from '../cardIcons/addToFavourites';
+import img from "../../images/film-poster-placeholder.png";
+import AddToFavouritesIcon from "../cardIcons/addToFavourites";
 
-// Styled components for enhanced design
 const PageContainer = styled(Box)({
   width: "100%",
-  marginBottom:"5rem"
+  marginBottom: "5rem",
 });
 
 const DetailCard = styled(Card)({
@@ -134,18 +132,23 @@ interface TemplateMoviePageProps {
   children: React.ReactNode;
 }
 
-const TemplateMoviePage: React.FC<TemplateMoviePageProps> = ({ movie, children }) => {
-  // Limit the number of images to display (max 8)
+const TemplateMoviePage: React.FC<TemplateMoviePageProps> = ({
+  movie,
+  children,
+}) => {
   const limitedImages = movie.images?.backdrops?.slice(0, 8) || [];
 
   return (
     <PageContainer>
       <Grid container spacing={4}>
-        {/* Left column - Poster and basic info */}
         <Grid item xs={12} md={4}>
           <DetailCard>
             <PosterImage
-              image={movie.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : img}
+              image={
+                movie.poster_path
+                  ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+                  : img
+              }
               title={movie.title}
             />
             <CardContent>
@@ -157,116 +160,117 @@ const TemplateMoviePage: React.FC<TemplateMoviePageProps> = ({ movie, children }
                   </Typography>
                 )}
               </MovieTitle>
-              
+
               <RatingContainer>
-                <Rating 
-                  value={movie.vote_average / 2} 
-                  precision={0.5} 
-                  readOnly 
-                  sx={{ 
+                <Rating
+                  value={movie.vote_average / 2}
+                  precision={0.5}
+                  readOnly
+                  sx={{
                     "& .MuiRating-iconFilled": {
-                      color: "#E50914"
-                    }
+                      color: "#E50914",
+                    },
                   }}
                 />
-                <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ ml: 1 }}
+                >
                   {movie.vote_average.toFixed(1)}/10 ({movie.vote_count} votes)
                 </Typography>
               </RatingContainer>
-              
+
               <ActionContainer>
                 <AddToFavouritesIcon {...movie} />
               </ActionContainer>
-              
+
               <Divider sx={{ my: 2, backgroundColor: "#333333" }} />
-              
+
               <InfoSection>
                 {movie.release_date && (
                   <InfoText variant="body2" gutterBottom>
-                    Release Date: {new Date(movie.release_date).toLocaleDateString()}
+                    Release Date:{" "}
+                    {new Date(movie.release_date).toLocaleDateString()}
                   </InfoText>
                 )}
-                
+
                 {movie.runtime && (
                   <InfoText variant="body2" gutterBottom>
                     Runtime: {movie.runtime} minutes
                   </InfoText>
                 )}
-                
+
                 {movie.revenue > 0 && (
                   <InfoText variant="body2" gutterBottom>
                     Revenue: ${(movie.revenue / 1000000).toFixed(2)} million
                   </InfoText>
                 )}
               </InfoSection>
-              
+
               {movie.genres && movie.genres.length > 0 && (
                 <InfoSection>
-                  <InfoText variant="body2">
-                    Genres:
-                  </InfoText>
+                  <InfoText variant="body2">Genres:</InfoText>
                   <ChipContainer>
                     {movie.genres.map((genre) => (
-                      <Chip 
-                        key={genre.id} 
-                        label={genre.name} 
-                        size="small" 
-                        sx={{ 
+                      <Chip
+                        key={genre.id}
+                        label={genre.name}
+                        size="small"
+                        sx={{
                           backgroundColor: "rgba(229, 9, 20, 0.1)",
                           color: "#FFFFFF",
-                          border: "1px solid rgba(229, 9, 20, 0.3)"
-                        }} 
+                          border: "1px solid rgba(229, 9, 20, 0.3)",
+                        }}
                       />
                     ))}
                   </ChipContainer>
                 </InfoSection>
               )}
-              
-              {movie.production_companies && movie.production_companies.length > 0 && (
-                <InfoText variant="body2" gutterBottom>
-                  Production: {movie.production_companies.map((c: { name: any; }) => c.name).slice(0, 2).join(', ')}
-                  {movie.production_companies.length > 2 && ' and others'}
-                </InfoText>
-              )}
+
+              {movie.production_companies &&
+                movie.production_companies.length > 0 && (
+                  <InfoText variant="body2" gutterBottom>
+                    Production:{" "}
+                    {movie.production_companies
+                      .map((c: { name: any }) => c.name)
+                      .slice(0, 2)
+                      .join(", ")}
+                    {movie.production_companies.length > 2 && " and others"}
+                  </InfoText>
+                )}
             </CardContent>
           </DetailCard>
-          
-          {/* Images section - Limited to 8 images */}
+
           {limitedImages.length > 0 && (
             <ContentSection sx={{ mt: 3 }}>
-              <SectionTitle variant="h6">
-                Images
-              </SectionTitle>
+              <SectionTitle variant="h6">Images</SectionTitle>
               <StyledImageList cols={2} gap={8}>
-                {limitedImages.map((image: { file_path: any; }, index: number) => (
-                  <ImageItem key={index}>
-                    <img
-                      src={`https://image.tmdb.org/t/p/w500/${image.file_path}`}
-                      alt={`Movie scene ${index + 1}`}
-                      loading="lazy"
-                    />
-                  </ImageItem>
-                ))}
+                {limitedImages.map(
+                  (image: { file_path: any }, index: number) => (
+                    <ImageItem key={index}>
+                      <img
+                        src={`https://image.tmdb.org/t/p/w500/${image.file_path}`}
+                        alt={`Movie scene ${index + 1}`}
+                        loading="lazy"
+                      />
+                    </ImageItem>
+                  )
+                )}
               </StyledImageList>
             </ContentSection>
           )}
         </Grid>
-        
-        {/* Right column - Overview and details */}
+
         <Grid item xs={12} md={8}>
           <ContentSection>
-            <SectionTitle variant="h5">
-              Overview
-            </SectionTitle>
+            <SectionTitle variant="h5">Overview</SectionTitle>
             <Typography variant="body1" sx={{ color: "#CCCCCC" }}>
               {movie.overview || "No overview available."}
             </Typography>
           </ContentSection>
-          
-          {/* Children components (like MovieDetails) */}
-          <ContentSection>
-            {children}
-          </ContentSection>
+
+          <ContentSection>{children}</ContentSection>
         </Grid>
       </Grid>
     </PageContainer>

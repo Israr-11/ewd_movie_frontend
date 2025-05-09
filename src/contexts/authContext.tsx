@@ -1,7 +1,6 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect } from "react";
 
-const BASE_URL = 'https://p68l7lqe8e.execute-api.us-east-1.amazonaws.com/prod/';
-
+const BASE_URL = "https://p68l7lqe8e.execute-api.us-east-1.amazonaws.com/prod/";
 
 interface AuthTokens {
   idToken: string;
@@ -15,38 +14,38 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  getUserId: () => string | null;  
+  getUserId: () => string | null;
   error: string | null;
 }
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
+export const AuthProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [tokens, setTokens] = useState<AuthTokens | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Check for existing tokens on mount
   useEffect(() => {
-    const storedTokens = localStorage.getItem('auth_tokens');
+    const storedTokens = localStorage.getItem("auth_tokens");
     if (storedTokens) {
       try {
         const parsedTokens = JSON.parse(storedTokens) as AuthTokens;
-        
-        // Verify token expiration
-        const payload = JSON.parse(atob(parsedTokens.idToken.split('.')[1]));
+
+        const payload = JSON.parse(atob(parsedTokens.idToken.split(".")[1]));
         const isExpired = Date.now() >= payload.exp * 1000;
-        
+
         if (!isExpired) {
           setTokens(parsedTokens);
           setIsAuthenticated(true);
           setUserEmail(payload.email);
         } else {
-          // Token expired, clean up
-          localStorage.removeItem('auth_tokens');
+          localStorage.removeItem("auth_tokens");
+          localStorage.removeItem("user_id");
         }
       } catch (e) {
-        localStorage.removeItem('auth_tokens');
+        localStorage.removeItem("auth_tokens");
       }
     }
   }, []);
@@ -55,20 +54,17 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
     try {
       setError(null);
       const response = await fetch(`${BASE_URL}/auth/register`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Registration failed');
+        throw new Error(errorData.message || "Registration failed");
       }
-
-      // After successful registration, you might want to automatically log in
-      // or just inform the user to verify their email
     } catch (err) {
       setError((err as Error).message);
       throw err;
@@ -79,16 +75,16 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
     try {
       setError(null);
       const response = await fetch(`${BASE_URL}/auth/login`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
+        throw new Error(errorData.message || "Login failed");
       }
 
       const data = await response.json();
@@ -97,19 +93,12 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         accessToken: data.accessToken,
       };
 
-      // Store tokens in localStorage
-      localStorage.setItem('auth_tokens', JSON.stringify(newTokens));
-      
-      console.log('newTokens.idtoken:', newTokens.idToken)
-      // Parse the ID token to get user info
-      const payload = JSON.parse(atob(newTokens.idToken.split('.')[1]));
-      // When parsing the token after login
+      localStorage.setItem("auth_tokens", JSON.stringify(newTokens));
 
-      console.log('payload:', payload)
+      const payload = JSON.parse(atob(newTokens.idToken.split(".")[1]));
       const userId = payload.sub;
 
-     // Store in localStorage
-     localStorage.setItem('user_id', userId);
+      localStorage.setItem("user_id", userId);
 
       setTokens(newTokens);
       setIsAuthenticated(true);
@@ -121,37 +110,35 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
   };
 
   const getUserId = () => {
-    const storedTokens = localStorage.getItem('auth_tokens');
+    const storedTokens = localStorage.getItem("auth_tokens");
     if (!storedTokens) return null;
-    
+
     try {
       const tokens = JSON.parse(storedTokens);
-      const payload = JSON.parse(atob(tokens.idToken.split('.')[1]));
+      const payload = JSON.parse(atob(tokens.idToken.split(".")[1]));
       return payload.sub;
     } catch (e) {
-      console.error('Error extracting user ID from token', e);
+      console.error("Error extracting user ID from token", e);
       return null;
     }
   };
 
   const logout = async () => {
     try {
-      // Call logout endpoint if needed
       if (tokens) {
         await fetch(`${BASE_URL}/auth/logout`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Authorization': `Bearer ${tokens.accessToken}`,
-            'Content-Type': 'application/json',
+            Authorization: `Bearer ${tokens.accessToken}`,
+            "Content-Type": "application/json",
           },
         });
       }
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     } finally {
-      // Clear local storage and state regardless of API response
-      localStorage.removeItem('auth_tokens');
-      localStorage.removeItem('user_id');
+      localStorage.removeItem("auth_tokens");
+      localStorage.removeItem("user_id");
       setTokens(null);
       setIsAuthenticated(false);
       setUserEmail(null);
@@ -179,7 +166,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

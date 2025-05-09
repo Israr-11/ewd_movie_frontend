@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import useTVSeries from "../hooks/useTVSeries";
 import img from '../images/film-poster-placeholder.png';
 
-// Styled components for enhanced design
 const PageContainer = styled(Box)({
   padding: "2rem 1.5rem",
   backgroundColor: "#0D0D0D",

@@ -25,14 +25,13 @@ const genreFiltering = {
   condition: genreFilter,
 };
 
-// Styled components for the favorites page
 const PageContainer = styled(Box)({
   position: "relative",
   padding: "0 1rem",
-  marginLeft:"-1rem",
-  width: "99.98%", // Match the header width
-  marginBottom: "80px", // Add significant bottom margin to clear the footer
-  minHeight: "calc(100vh - 180px)", // Set minimum height to push content away from footer
+  marginLeft: "-1rem",
+  width: "99.98%",
+  marginBottom: "80px",
+  minHeight: "calc(100vh - 180px)",
   display: "flex",
   flexDirection: "column",
 });
@@ -78,29 +77,28 @@ const EmptyStateText = styled(Typography)({
 });
 
 const FavouriteMoviesPage: React.FC = () => {
-  const { 
-    favourites: movieIds, 
-    isLoading: contextLoading, 
+  const {
+    favourites: movieIds,
+    isLoading: contextLoading,
     error: contextError,
-    loadFavorites 
+    loadFavorites,
   } = useContext(MoviesContext);
-  
+
   const [reviewsModalOpen, setReviewsModalOpen] = useState(false);
   const [hasLoadedFavorites, setHasLoadedFavorites] = useState(false);
-  
-  const { filterValues, setFilterValues, filterFunction } = useFiltering(
-    [titleFiltering, genreFiltering]
-  );
+
+  const { filterValues, setFilterValues, filterFunction } = useFiltering([
+    titleFiltering,
+    genreFiltering,
+  ]);
   const navigate = useNavigate();
 
-  // Check authentication and load favorites ONCE when the component mounts
   useEffect(() => {
     if (!isAuthenticated()) {
       navigate("/login", { replace: true });
       return;
     }
-    
-    // Only load favorites if we haven't already
+
     if (!hasLoadedFavorites) {
       loadFavorites().then(() => {
         setHasLoadedFavorites(true);
@@ -108,25 +106,23 @@ const FavouriteMoviesPage: React.FC = () => {
     }
   }, [navigate, loadFavorites, hasLoadedFavorites]);
 
-  // Create an array of queries to fetch movie details from TMDB API
   const favouriteMovieQueries = useQueries(
     movieIds.map((movieId) => {
       return {
         queryKey: ["movie", movieId],
         queryFn: () => getMovie(movieId.toString()),
-        staleTime: 60 * 60 * 1000, // Cache for 1 hour
-        cacheTime: 60 * 60 * 1000, // Keep in cache for 1 hour
-        refetchOnWindowFocus: false, // Don't refetch when window regains focus
-        refetchOnMount: false, // Don't refetch when component mounts if data is already in cache
+        staleTime: 60 * 60 * 1000,
+        cacheTime: 60 * 60 * 1000,
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
       };
     })
   );
 
-  // Check if any of the parallel queries is still loading
-  const isLoading = contextLoading || favouriteMovieQueries.some(query => query.isLoading);
-  
-  // Check if there are any errors
-  const queryErrors = favouriteMovieQueries.filter(query => query.isError);
+  const isLoading =
+    contextLoading || favouriteMovieQueries.some((query) => query.isLoading);
+
+  const queryErrors = favouriteMovieQueries.filter((query) => query.isError);
   const hasErrors = contextError || queryErrors.length > 0;
 
   if (isLoading) {
@@ -141,18 +137,18 @@ const FavouriteMoviesPage: React.FC = () => {
     );
   }
 
-  // Extract movie data from queries
   const allFavourites = favouriteMovieQueries
-    .filter(query => query.data) // Filter out any undefined data
-    .map(query => query.data);
-    
-  // Apply filtering
+    .filter((query) => query.data)
+    .map((query) => query.data);
+
   const displayedMovies = filterFunction(allFavourites);
 
   const changeFilterValues = (type: string, value: string) => {
     const changedFilter = { name: type, value: value };
     const updatedFilterSet =
-      type === "title" ? [changedFilter, filterValues[1]] : [filterValues[0], changedFilter];
+      type === "title"
+        ? [changedFilter, filterValues[1]]
+        : [filterValues[0], changedFilter];
     setFilterValues(updatedFilterSet);
   };
 
@@ -163,13 +159,13 @@ const FavouriteMoviesPage: React.FC = () => {
           <EmptyStateText variant="h5">
             You haven't added any favorites yet.
           </EmptyStateText>
-          <Button 
-            variant="contained" 
-            color="primary" 
+          <Button
+            variant="contained"
+            color="primary"
             onClick={() => navigate("/")}
-            sx={{ 
-              backgroundColor: "#E50914", 
-              "&:hover": { backgroundColor: "#B2070F" } 
+            sx={{
+              backgroundColor: "#E50914",
+              "&:hover": { backgroundColor: "#B2070F" },
             }}
           >
             Discover Movies
@@ -177,30 +173,30 @@ const FavouriteMoviesPage: React.FC = () => {
         </EmptyStateContainer>
       ) : (
         <>
-          <ReviewsButton 
-            variant="contained" 
+          <ReviewsButton
+            variant="contained"
             startIcon={<RateReviewIcon />}
             onClick={() => setReviewsModalOpen(true)}
           >
             View My Reviews
           </ReviewsButton>
-          
+
           <PageTemplate
             title="Favourite Movies"
             movies={displayedMovies}
             action={(movie) => {
               return (
-                <Box sx={{ display: 'flex', gap: 1 }}>
+                <Box sx={{ display: "flex", gap: 1 }}>
                   <RemoveFromFavourites {...movie} />
                   <WriteReview {...movie} />
                 </Box>
               );
             }}
           />
-          
-          <ReviewsModal 
-            open={reviewsModalOpen} 
-            onClose={() => setReviewsModalOpen(false)} 
+
+          <ReviewsModal
+            open={reviewsModalOpen}
+            onClose={() => setReviewsModalOpen(false)}
           />
         </>
       )}

@@ -29,8 +29,7 @@ const useActorDetails = (id: string) => {
 
   useEffect(() => {
     setIsLoading(true);
-    
-    // Fetch actor details and movie credits in parallel
+
     Promise.all([
       getActorDetails(id),
       getActorMovieCredits(id)

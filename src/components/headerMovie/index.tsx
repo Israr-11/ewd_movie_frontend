@@ -5,10 +5,10 @@ import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import HomeIcon from "@mui/icons-material/Home";
-import { MovieDetailsProps } from "../../types/interfaces"; 
+import { MovieDetailsProps } from "../../types/interfaces";
 
 const styles = {
-    root: {  
+  root: {
     display: "flex",
     justifyContent: "space-around",
     alignItems: "center",
@@ -18,7 +18,6 @@ const styles = {
 };
 
 const MovieHeader: React.FC<MovieDetailsProps> = (movie) => {
-  
   return (
     <Paper component="div" sx={styles.root}>
       <IconButton aria-label="go back">
@@ -26,9 +25,10 @@ const MovieHeader: React.FC<MovieDetailsProps> = (movie) => {
       </IconButton>
 
       <Typography variant="h4" component="h3">
-        {movie.title}{"   "}
+        {movie.title}
+        {"   "}
         <a href={movie.homepage}>
-          <HomeIcon color="primary"  fontSize="large"/>
+          <HomeIcon color="primary" fontSize="large" />
         </a>
         <br />
         <span>{`${movie.tagline}`} </span>

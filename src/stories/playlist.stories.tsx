@@ -8,10 +8,8 @@ import { PlaylistProvider } from '../contexts/playlistContext';
 import { Card, CardContent, Typography, Box, Button, List, ListItem, ListItemText, Divider } from '@mui/material';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 
-// Create a new QueryClient for the stories
 const queryClient = new QueryClient();
 
-// Define types for our data
 interface Movie {
   id: number;
   title: string;
@@ -27,7 +25,6 @@ interface Playlist {
   Movies: Movie[];
 }
 
-// Sample playlist data
 const samplePlaylists: Playlist[] = [
   {
     Id: 1,
@@ -69,7 +66,6 @@ interface PlaylistCardProps {
   playlist: Playlist;
 }
 
-// Playlist Card Component for the story
 const PlaylistCard: React.FC<PlaylistCardProps> = ({ playlist }) => {
   return (
     <Card sx={{ maxWidth: 345, mb: 3 }}>
@@ -138,7 +134,6 @@ interface PlaylistListProps {
   playlists: Playlist[];
 }
 
-// Playlist List Component for the story
 const PlaylistList: React.FC<PlaylistListProps> = ({ playlists }) => {
   return (
     <Box sx={{ maxWidth: 800, mx: 'auto', p: 2 }}>
@@ -189,14 +184,12 @@ const meta: Meta<typeof PlaylistList> = {
 export default meta;
 type Story = StoryObj<typeof PlaylistList>;
 
-// Basic playlist list story
 export const Basic: Story = {
   args: {
     playlists: samplePlaylists,
   },
 };
 
-// Empty playlists story
 export const EmptyPlaylists: Story = {
   render: () => (
     <Box sx={{ maxWidth: 800, mx: 'auto', p: 2 }}>
@@ -225,7 +218,6 @@ export const EmptyPlaylists: Story = {
   ),
 };
 
-// Single playlist card story
 export const SinglePlaylistCard: Story = {
   render: () => <PlaylistCard playlist={samplePlaylists[0]} />,
 };

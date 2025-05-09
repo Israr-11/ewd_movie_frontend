@@ -11,11 +11,14 @@ const RemoveFromFavourites: React.FC<BaseMovieProps> = ({ ...movie }) => {
   const handleRemoveFromFavourites = (e: React.MouseEvent) => {
     e.preventDefault();
     try {
-      // Remove the await to make it non-blocking
       context.removeFromFavourites(movie);
       toast.success(`${movie.title} removed from favorites!`);
     } catch (err) {
-      toast.error(`Failed to remove from favorites: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      toast.error(
+        `Failed to remove from favorites: ${
+          err instanceof Error ? err.message : "Unknown error"
+        }`
+      );
     }
   };
 
@@ -30,7 +33,7 @@ const RemoveFromFavourites: React.FC<BaseMovieProps> = ({ ...movie }) => {
         width: "40px",
         display: "flex",
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
       }}
     >
       <DeleteIcon fontSize="medium" />

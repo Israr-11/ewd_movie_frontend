@@ -4,15 +4,15 @@ import { DiscoverMovies } from '../types/interfaces';
 
 const useUpcomingMovies = () => {
   const { data, error, isLoading, isError } = useQuery<DiscoverMovies, Error>(
-    "upcoming", // Cache key for upcoming movies
+    "upcoming",
     getUpcomingMovies
   );
 
-  return { 
-    movies: data ? data.results : [], 
-    isLoading, 
+  return {
+    movies: data ? data.results : [],
+    isLoading,
     isError,
-    error 
+    error
   };
 };
 

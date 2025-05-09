@@ -29,8 +29,7 @@ const useTVSeriesDetails = (id: string) => {
 
   useEffect(() => {
     setIsLoading(true);
-    
-    // Fetch TV series details and images in parallel
+
     Promise.all([
       getTVSeriesDetails(id),
       getTVSeriesImages(id)

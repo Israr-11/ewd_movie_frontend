@@ -1,15 +1,15 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { 
-  Typography, 
-  Grid, 
-  Box, 
-  Card, 
-  CardMedia, 
-  CardContent, 
-  Chip, 
-  Divider, 
-  CircularProgress, 
+import {
+  Typography,
+  Grid,
+  Box,
+  Card,
+  CardMedia,
+  CardContent,
+  Chip,
+  Divider,
+  CircularProgress,
   Alert,
   Paper,
   Rating,
@@ -17,13 +17,12 @@ import {
   ListItem,
   ListItemText,
   Button,
-  styled
+  styled,
 } from "@mui/material";
 import useTVSeriesDetails from "../hooks/useTVSeriesDetails";
-import img from '../images/film-poster-placeholder.png';
+import img from "../images/film-poster-placeholder.png";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-// Styled components for enhanced design
 const PageContainer = styled(Box)({
   padding: "2rem 1.5rem",
   backgroundColor: "#0D0D0D",
@@ -40,7 +39,7 @@ const BackButton = styled(Button)({
   },
   "& .MuiSvgIcon-root": {
     color: "#E50914",
-  }
+  },
 });
 
 const DetailCard = styled(Card)({
@@ -114,7 +113,7 @@ const SeasonItem = styled(ListItem)({
   },
 });
 
-const SeasonImage = styled('img')({
+const SeasonImage = styled("img")({
   width: 100,
   borderRadius: "4px",
   border: "1px solid #333333",
@@ -151,7 +150,7 @@ const TVSeriesDetailsPage = () => {
 
   if (isLoading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
         <CircularProgress sx={{ color: "#E50914" }} />
       </Box>
     );
@@ -175,177 +174,164 @@ const TVSeriesDetailsPage = () => {
 
   return (
     <PageContainer>
-      <BackButton 
-        startIcon={<ArrowBackIcon />} 
-        onClick={() => navigate('/tv')}
-      >
+      <BackButton startIcon={<ArrowBackIcon />} onClick={() => navigate("/tv")}>
         Back to TV Series
       </BackButton>
-      
+
       <Grid container spacing={4}>
-        {/* Left column - Poster and basic info */}
         <Grid item xs={12} md={4}>
           <DetailCard>
             <PosterImage
-              image={tvSeries.poster_path ? `https://image.tmdb.org/t/p/w500${tvSeries.poster_path}` : img}
+              image={
+                tvSeries.poster_path
+                  ? `https://image.tmdb.org/t/p/w500${tvSeries.poster_path}`
+                  : img
+              }
               title={tvSeries.name}
             />
             <CardContent>
-              <SeriesTitle variant="h5">
-                {tvSeries.name}
-              </SeriesTitle>
-              
+              <SeriesTitle variant="h5">{tvSeries.name}</SeriesTitle>
+
               <RatingContainer>
-                <Rating 
-                  value={tvSeries.vote_average / 2} 
-                  precision={0.5} 
-                  readOnly 
-                  sx={{ 
+                <Rating
+                  value={tvSeries.vote_average / 2}
+                  precision={0.5}
+                  readOnly
+                  sx={{
                     "& .MuiRating-iconFilled": {
-                      color: "#E50914"
-                    }
+                      color: "#E50914",
+                    },
                   }}
                 />
-                <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ ml: 1 }}
+                >
                   {tvSeries.vote_average.toFixed(1)}/10
                 </Typography>
               </RatingContainer>
-              
+
               <InfoSection>
                 <InfoText variant="body2" gutterBottom>
-                  First aired: {new Date(tvSeries.first_air_date).toLocaleDateString()}
+                  First aired:{" "}
+                  {new Date(tvSeries.first_air_date).toLocaleDateString()}
                 </InfoText>
-                
+
                 {tvSeries.last_air_date && (
                   <InfoText variant="body2" gutterBottom>
-                    Last aired: {new Date(tvSeries.last_air_date).toLocaleDateString()}
+                    Last aired:{" "}
+                    {new Date(tvSeries.last_air_date).toLocaleDateString()}
                   </InfoText>
                 )}
-                
+
                 <InfoText variant="body2" gutterBottom>
-                  Status: <Chip 
-                    label={tvSeries.status} 
-                    size="small" 
-                    sx={{ 
+                  Status:{" "}
+                  <Chip
+                    label={tvSeries.status}
+                    size="small"
+                    sx={{
                       ml: 1,
-                      backgroundColor: tvSeries.status === "Ended" 
-                        ? "rgba(150, 150, 150, 0.2)" 
-                        : "rgba(0, 200, 83, 0.2)",
-                      color: tvSeries.status === "Ended" 
-                        ? "#CCCCCC" 
-                        : "#00C853",
-                      border: tvSeries.status === "Ended" 
-                        ? "1px solid #555555" 
-                        : "1px solid rgba(0, 200, 83, 0.3)"
-                    }} 
+                      backgroundColor:
+                        tvSeries.status === "Ended"
+                          ? "rgba(150, 150, 150, 0.2)"
+                          : "rgba(0, 200, 83, 0.2)",
+                      color:
+                        tvSeries.status === "Ended" ? "#CCCCCC" : "#00C853",
+                      border:
+                        tvSeries.status === "Ended"
+                          ? "1px solid #555555"
+                          : "1px solid rgba(0, 200, 83, 0.3)",
+                    }}
                   />
                 </InfoText>
-                
+
                 <InfoText variant="body2" gutterBottom>
-                  Seasons: {tvSeries.number_of_seasons} | Episodes: {tvSeries.number_of_episodes}
+                  Seasons: {tvSeries.number_of_seasons} | Episodes:{" "}
+                  {tvSeries.number_of_episodes}
                 </InfoText>
               </InfoSection>
-              
+
               {tvSeries.genres && tvSeries.genres.length > 0 && (
                 <InfoSection>
-                  <InfoText variant="body2">
-                    Genres:
-                  </InfoText>
+                  <InfoText variant="body2">Genres:</InfoText>
                   <ChipContainer>
                     {tvSeries.genres.map((genre) => (
-                      <Chip 
-                        key={genre.id} 
-                        label={genre.name} 
-                        size="small" 
-                        sx={{ 
+                      <Chip
+                        key={genre.id}
+                        label={genre.name}
+                        size="small"
+                        sx={{
                           backgroundColor: "rgba(229, 9, 20, 0.1)",
                           color: "#FFFFFF",
-                          border: "1px solid rgba(229, 9, 20, 0.3)"
-                        }} 
+                          border: "1px solid rgba(229, 9, 20, 0.3)",
+                        }}
                       />
                     ))}
                   </ChipContainer>
                 </InfoSection>
               )}
-              
+
               {tvSeries.networks && tvSeries.networks.length > 0 && (
                 <InfoSection>
-                  <InfoText variant="body2">
-                    Networks:
-                  </InfoText>
+                  <InfoText variant="body2">Networks:</InfoText>
                   <ChipContainer>
                     {tvSeries.networks.map((network) => (
-                      <Chip 
-                        key={network.id} 
-                        label={network.name} 
-                        size="small" 
-                        variant="outlined" 
-                        sx={{ 
-                          color: "#CCCCCC", 
-                          borderColor: "#555555"
-                        }} 
+                      <Chip
+                        key={network.id}
+                        label={network.name}
+                        size="small"
+                        variant="outlined"
+                        sx={{
+                          color: "#CCCCCC",
+                          borderColor: "#555555",
+                        }}
                       />
                     ))}
                   </ChipContainer>
                 </InfoSection>
               )}
-              
-              {/* Removed production_countries and original_language properties that don't exist in TVSeriesDetails */}
-              
+
               <InfoText variant="body2" gutterBottom>
-                Origin Country: {tvSeries.origin_country?.join(', ') || 'Unknown'}
+                Origin Country:{" "}
+                {tvSeries.origin_country?.join(", ") || "Unknown"}
               </InfoText>
-              
+
               <InfoText variant="body2" gutterBottom>
-                Type: {tvSeries.type || 'TV Series'}
+                Type: {tvSeries.type || "TV Series"}
               </InfoText>
             </CardContent>
           </DetailCard>
         </Grid>
-        
-        {/* Right column - Overview, creators, seasons */}
+
         <Grid item xs={12} md={8}>
-          {/* Overview section */}
           <ContentPaper>
-            <SectionTitle variant="h5">
-              Overview
-            </SectionTitle>
+            <SectionTitle variant="h5">Overview</SectionTitle>
             <Typography variant="body1" sx={{ color: "#CCCCCC" }}>
               {tvSeries.overview || "No overview available."}
             </Typography>
           </ContentPaper>
-          
-          {/* Creators section */}
+
           {tvSeries.created_by && tvSeries.created_by.length > 0 && (
             <ContentPaper>
-              <SectionTitle variant="h5">
-                Created By
-              </SectionTitle>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+              <SectionTitle variant="h5">Created By</SectionTitle>
+              <Box sx={{ display: "flex", flexWrap: "wrap" }}>
                 {tvSeries.created_by.map((creator) => (
-                  <CreatorChip 
-                    key={creator.id} 
-                    label={creator.name} 
-                  />
+                  <CreatorChip key={creator.id} label={creator.name} />
                 ))}
               </Box>
             </ContentPaper>
           )}
-          
-          {/* Seasons section */}
+
           {tvSeries.seasons && tvSeries.seasons.length > 0 && (
             <ContentPaper>
-              <SectionTitle variant="h5">
-                Seasons
-              </SectionTitle>
+              <SectionTitle variant="h5">Seasons</SectionTitle>
               <List sx={{ p: 0 }}>
                 {tvSeries.seasons.map((season) => (
                   <React.Fragment key={season.id}>
                     <SeasonItem alignItems="flex-start">
-                      <Box sx={{ display: 'flex', width: '100%' }}>
-                        <Box sx={{ mr: 2 }}>
-                
-                        </Box>
+                      <Box sx={{ display: "flex", width: "100%" }}>
+                        <Box sx={{ mr: 2 }}></Box>
                         <ListItemText
                           primary={
                             <SeasonTitle variant="subtitle1">
@@ -355,7 +341,10 @@ const TVSeriesDetailsPage = () => {
                           secondary={
                             <Box>
                               <SeasonInfo variant="body2">
-                                {season.air_date && `Air date: ${new Date(season.air_date).toLocaleDateString()} • `}
+                                {season.air_date &&
+                                  `Air date: ${new Date(
+                                    season.air_date
+                                  ).toLocaleDateString()} • `}
                                 {season.episode_count} episodes
                               </SeasonInfo>
                               {season.overview && (
@@ -368,7 +357,11 @@ const TVSeriesDetailsPage = () => {
                         />
                       </Box>
                     </SeasonItem>
-                    <Divider variant="inset" component="li" sx={{ backgroundColor: '#333333' }} />
+                    <Divider
+                      variant="inset"
+                      component="li"
+                      sx={{ backgroundColor: "#333333" }}
+                    />
                   </React.Fragment>
                 ))}
               </List>
