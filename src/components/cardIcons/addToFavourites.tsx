@@ -14,7 +14,7 @@ import Zoom from "@mui/material/Zoom";
 import Badge from "@mui/material/Badge";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
-const FavoriteButton = styled(IconButton)(({ theme }) => ({
+const FavoriteButton = styled(IconButton)(({ }) => ({
   backgroundColor: "rgba(13, 13, 13, 0.7)",
   transition: "all 0.3s ease",
   "&:hover": {
@@ -27,11 +27,6 @@ const FavoriteButton = styled(IconButton)(({ theme }) => ({
   padding: 8,
   margin: 0,
 }));
-
-const StyledFavoriteIcon = styled(FavoriteIcon)({
-  color: "#E50914",
-  filter: "drop-shadow(0px 0px 3px rgba(229, 9, 20, 0.5))",
-});
 
 const StyledFavoriteBorderIcon = styled(FavoriteBorderIcon)({
   color: "#E50914",
@@ -47,7 +42,7 @@ const StyledCircularProgress = styled(CircularProgress)({
   color: "#E50914",
 });
 
-const StyledBadge = styled(Badge)(({ theme }) => ({
+const StyledBadge = styled(Badge)(({ }) => ({
   "& .MuiBadge-badge": {
     backgroundColor: "#E50914",
     color: "#FFFFFF",

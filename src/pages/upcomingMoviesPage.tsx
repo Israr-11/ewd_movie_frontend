@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Typography, Grid, Box, styled } from "@mui/material";
 import useUpcomingMovies from "../hooks/useUpcomingMovies";
 import MovieCard from "../components/movieCard";

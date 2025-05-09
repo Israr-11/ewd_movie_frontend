@@ -87,7 +87,7 @@ const FavouriteMoviesPage: React.FC = () => {
   const [reviewsModalOpen, setReviewsModalOpen] = useState(false);
   const [hasLoadedFavorites, setHasLoadedFavorites] = useState(false);
 
-  const { filterValues, setFilterValues, filterFunction } = useFiltering([
+  const { filterFunction } = useFiltering([
     titleFiltering,
     genreFiltering,
   ]);
@@ -143,14 +143,6 @@ const FavouriteMoviesPage: React.FC = () => {
 
   const displayedMovies = filterFunction(allFavourites);
 
-  const changeFilterValues = (type: string, value: string) => {
-    const changedFilter = { name: type, value: value };
-    const updatedFilterSet =
-      type === "title"
-        ? [changedFilter, filterValues[1]]
-        : [filterValues[0], changedFilter];
-    setFilterValues(updatedFilterSet);
-  };
 
   return (
     <PageContainer>

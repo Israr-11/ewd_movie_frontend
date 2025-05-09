@@ -72,7 +72,7 @@ const CreateFantasyMoviePage = () => {
   const [runtime, setRuntime] = useState<number>(120);
   const [companies, setCompanies] = useState<string[]>([]);
   const [newCompany, setNewCompany] = useState("");
-  const [posterUrl, setPosterUrl] = useState("");
+  const [posterUrl] = useState("");
   const [posterFile, setPosterFile] = useState<File | null>(null);
   const [posterPreview, setPosterPreview] = useState<string | null>(null);
 

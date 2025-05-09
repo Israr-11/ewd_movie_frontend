@@ -13,7 +13,7 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useAuth } from "../../contexts/authContext";
 
-const StyledAppBar = styled(AppBar)(({ theme }) => ({
+const StyledAppBar = styled(AppBar)(({  }) => ({
   backgroundColor: "#0D0D0D",
   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.5)",
   borderBottom: "1px solid #333333",

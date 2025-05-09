@@ -25,17 +25,6 @@ export const yearFilter = (movie: BaseMovieProps, value: string) => {
   return year === value;
 };
 
-const styles = {
-  root: {
-    backgroundColor: "#bfbfbf",
-  },
-  fab: {
-    marginTop: 8,
-    position: "fixed",
-    top: 20,
-    right: 2,
-  },
-};
 
 interface MovieFilterUIProps {
   onFilterValuesChange: (f: string, s: string) => void;

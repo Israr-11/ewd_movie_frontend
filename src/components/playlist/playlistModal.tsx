@@ -56,7 +56,7 @@ const PlaylistModal: React.FC<PlaylistModalProps> = ({
     }
   }, [open, loadPlaylists]);
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 

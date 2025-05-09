@@ -13,7 +13,7 @@ import { styled } from "@mui/material/styles";
 import { BaseMovieProps } from "../../types/interfaces";
 import img from "../../images/film-poster-placeholder.png";
 
-const StyledCard = styled(Card)(({ theme }) => ({
+const StyledCard = styled(Card)(({ }) => ({
   maxWidth: 345,
   height: "100%",
   display: "flex",

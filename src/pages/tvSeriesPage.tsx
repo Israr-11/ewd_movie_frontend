@@ -1,4 +1,3 @@
-import React from "react";
 import { Typography, Grid, Card, CardMedia, CardContent, Box, CircularProgress, Alert, Rating, styled, Chip } from "@mui/material";
 import { Link } from "react-router-dom";
 import useTVSeries from "../hooks/useTVSeries";

@@ -113,15 +113,6 @@ const SeasonItem = styled(ListItem)({
   },
 });
 
-const SeasonImage = styled("img")({
-  width: 100,
-  borderRadius: "4px",
-  border: "1px solid #333333",
-  transition: "transform 0.3s ease",
-  "&:hover": {
-    transform: "scale(1.05)",
-  },
-});
 
 const SeasonTitle = styled(Typography)({
   color: "#FFFFFF",
