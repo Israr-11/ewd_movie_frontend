@@ -7,18 +7,18 @@ const FooterContainer = styled(Box)({
   color: '#FFFFFF',
   padding: '1rem 0',
   borderTop: '1px solid #333333',
-  position: 'fixed', // Fix the footer at the bottom
-  bottom: 0, // Position at bottom
-  left: 0, // Stretch across the full width
-  right: 0,
-  width: '100%',
-  zIndex: 100, // Ensure it stays above other content
+  position: 'fixed', // Keep it fixed at the bottom
+  bottom: 0,
+  left: '0.47%', // Match the header's left position
+  width: '99.03%', // Match the header's width
+  zIndex: 100,
 });
 
 const FooterContent = styled(Container)({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
+  maxWidth: '95%', // Further constrain the content if needed
 });
 
 const Copyright = styled(Typography)({
