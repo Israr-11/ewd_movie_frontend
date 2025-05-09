@@ -120,13 +120,10 @@ const AddMovieReviewPage = () => {
   return (
     <Box sx={{ maxWidth: 600, mx: "auto", p: 2 }}>
       <Paper elevation={3} sx={{ p: 3 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Write a Review
-        </Typography>
         
         {movie && (
-          <Typography variant="h5" component="h2" gutterBottom>
-            {movie.title}
+          <Typography variant="h4" component="h1" gutterBottom>
+            Submitting a review for <span style={{fontStyle:"italic"}}>{movie.title}</span>
           </Typography>
         )}
         
@@ -169,7 +166,7 @@ const AddMovieReviewPage = () => {
             <Button 
               type="submit" 
               variant="contained" 
-              color="primary"
+              color="error"
               disabled={isSubmitting}
             >
               {isSubmitting ? <CircularProgress size={24} /> : "Submit Review"}

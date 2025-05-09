@@ -5,13 +5,10 @@ import { useQueries } from "react-query";
 import { getMovie } from "../api/tmdb-api";
 import Spinner from "../components/spinner";
 import useFiltering from "../hooks/useFiltering";
-import MovieFilterUI, {
-  titleFilter,
-  genreFilter,
-} from "../components/movieFilterUI";
+import { titleFilter, genreFilter } from "../components/movieFilterUI";
 import RemoveFromFavourites from "../components/cardIcons/removeFromFavourites";
 import WriteReview from "../components/cardIcons/writeReview";
-import { Typography, Alert, Box, Button } from "@mui/material";
+import { Typography, Alert, Box, Button, styled } from "@mui/material";
 import { isAuthenticated } from "../utils/auth";
 import { useNavigate } from "react-router-dom";
 import ReviewsModal from "../components/reviewModal";
@@ -27,6 +24,58 @@ const genreFiltering = {
   value: "0",
   condition: genreFilter,
 };
+
+// Styled components for the favorites page
+const PageContainer = styled(Box)({
+  position: "relative",
+  padding: "0 1rem",
+  marginLeft:"-1rem",
+  width: "99.98%", // Match the header width
+  marginBottom: "80px", // Add significant bottom margin to clear the footer
+  minHeight: "calc(100vh - 180px)", // Set minimum height to push content away from footer
+  display: "flex",
+  flexDirection: "column",
+});
+
+const ReviewsButton = styled(Button)({
+  backgroundColor: "#E50914",
+  color: "#FFFFFF",
+  fontWeight: "bold",
+  padding: "8px 16px",
+  marginTop: "1.7rem",
+  marginRight: "1.7rem",
+  "&:hover": {
+    backgroundColor: "#B2070F",
+    boxShadow: "0 4px 8px rgba(229, 9, 20, 0.4)",
+  },
+  transition: "all 0.3s ease",
+  textTransform: "none",
+  borderRadius: "4px",
+  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+  position: "absolute",
+  right: "1rem",
+  top: "0",
+  zIndex: 10,
+});
+
+const EmptyStateContainer = styled(Box)({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  minHeight: "50vh",
+  backgroundColor: "rgba(13, 13, 13, 0.7)",
+  borderRadius: "8px",
+  padding: "2rem",
+  margin: "2rem 0",
+  border: "1px solid #333333",
+});
+
+const EmptyStateText = styled(Typography)({
+  color: "#FFFFFF",
+  textAlign: "center",
+  marginBottom: "1.5rem",
+});
 
 const FavouriteMoviesPage: React.FC = () => {
   const { 
@@ -108,41 +157,45 @@ const FavouriteMoviesPage: React.FC = () => {
   };
 
   return (
-    <>
+    <PageContainer>
       {movieIds.length === 0 ? (
-        <Typography variant="h5" sx={{ mt: 4, textAlign: 'center' }}>
-          You haven't added any favorites yet.
-        </Typography>
+        <EmptyStateContainer>
+          <EmptyStateText variant="h5">
+            You haven't added any favorites yet.
+          </EmptyStateText>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={() => navigate("/")}
+            sx={{ 
+              backgroundColor: "#E50914", 
+              "&:hover": { backgroundColor: "#B2070F" } 
+            }}
+          >
+            Discover Movies
+          </Button>
+        </EmptyStateContainer>
       ) : (
         <>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2 }}>
-            <Button 
-              variant="contained" 
-              color="primary" 
-              startIcon={<RateReviewIcon />}
-              onClick={() => setReviewsModalOpen(true)}
-            >
-              View My Reviews
-            </Button>
-          </Box>
+          <ReviewsButton 
+            variant="contained" 
+            startIcon={<RateReviewIcon />}
+            onClick={() => setReviewsModalOpen(true)}
+          >
+            View My Reviews
+          </ReviewsButton>
           
           <PageTemplate
             title="Favourite Movies"
             movies={displayedMovies}
             action={(movie) => {
               return (
-                <>
+                <Box sx={{ display: 'flex', gap: 1 }}>
                   <RemoveFromFavourites {...movie} />
                   <WriteReview {...movie} />
-                </>
+                </Box>
               );
             }}
-          />
-
-          <MovieFilterUI
-            onFilterValuesChange={changeFilterValues}
-            titleFilter={filterValues[0].value}
-            genreFilter={filterValues[1].value}
           />
           
           <ReviewsModal 
@@ -151,7 +204,7 @@ const FavouriteMoviesPage: React.FC = () => {
           />
         </>
       )}
-    </>
+    </PageContainer>
   );
 };
 

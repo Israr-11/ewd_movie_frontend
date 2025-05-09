@@ -17,7 +17,8 @@ export interface BaseMovieProps {
   vote_count: number;
   favourite?: boolean;
   genre_ids?: number[];
-  isError:any
+  isError:any;
+  movie:any;
 }
 
 export interface BaseMovieListProps {
