@@ -24,7 +24,7 @@ const AddToPlaylist: React.FC<BaseMovieProps> = ({ ...movie }) => {
     <>
       <Button 
         variant="contained" 
-        color="primary"
+        color="error"
         startIcon={<PlaylistAddIcon />}
         onClick={handleClick}
       >

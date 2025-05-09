@@ -194,7 +194,7 @@ const PlaylistModal: React.FC<PlaylistModalProps> = ({ open, onClose, movie }) =
           <Button 
             onClick={handleCreatePlaylist} 
             variant="contained" 
-            color="primary"
+            color="error"
             disabled={isSubmitting || !title.trim()}
           >
             {isSubmitting ? <CircularProgress size={24} /> : "Create & Add"}
