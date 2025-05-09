@@ -20,7 +20,7 @@ const initContainer = (): HTMLDivElement => {
   // Set styles directly
   Object.assign(container.style, {
     position: 'fixed',
-    top: '20px',
+    top: '70px',
     right: '20px',
     zIndex: '99999',
     display: 'flex',

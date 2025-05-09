@@ -25,6 +25,7 @@ import ActorsPage from "./pages/actorsPage";
 import ActorDetailsPage from "./pages/actorDetailsPage";
 import TVSeriesPage from "./pages/tvSeriesPage";
 import TVSeriesDetailsPage from "./pages/tvSeriesDetailsPage";
+import Footer from "./components/footer/footer";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -121,6 +122,8 @@ const App = () => {
               </Routes>
             </PlaylistProvider>
           </MoviesContextProvider>
+          <Footer />
+          {/* React Query Devtools */}
           <ReactQueryDevtools initialIsOpen={false} />
         </BrowserRouter>
       </AuthProvider>

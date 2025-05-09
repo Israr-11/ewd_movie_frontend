@@ -62,7 +62,14 @@ const MovieFilterUI: React.FC<MovieFilterUIProps> = ({
                 color="secondary"
                 variant="extended"
                 onClick={() => setDrawerOpen(true)}
-                sx={styles.fab}
+                sx={{ 
+    bgcolor: '#E50914', 
+    '&:hover': { bgcolor: '#B2070F' }, 
+      marginTop: 8,
+        position: "fixed",
+        top: 20,
+        right: 20,
+  }}
             >
                 Filter
             </Fab>

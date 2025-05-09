@@ -12,7 +12,7 @@ import { BaseMovieProps, DiscoverMovies } from "../types/interfaces";
 import { useQuery } from "react-query";
 import Spinner from "../components/spinner";
 import AddToFavouritesIcon from '../components/cardIcons/addToFavourites';
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, styled, Typography } from "@mui/material";
 
 const titleFiltering = {
   name: "title",
@@ -40,7 +40,21 @@ const sortByFiltering = {
   condition: () => true, // This doesn't filter, just for sorting
 };
 
-const MOVIES_PER_PAGE = 6;
+const MOVIES_PER_PAGE = 8;
+
+const LoadMoreButton = styled(Button)({
+  backgroundColor: "#E50914",
+  color: "#FFFFFF",
+  fontWeight: "bold",
+  padding: "10px 24px",
+  "&:hover": {
+    backgroundColor: "#B2070F",
+  },
+  textTransform: "uppercase",
+  letterSpacing: "1px",
+  borderRadius: "4px",
+  boxShadow: "0 2px 8px rgba(229, 9, 20, 0.3)",
+});
 
 const HomePage: React.FC = () => {
   const { data, error, isLoading, isError } = useQuery<DiscoverMovies, Error>("discover", getMovies);
@@ -114,17 +128,16 @@ const HomePage: React.FC = () => {
       />
       
       {/* Pagination controls */}
-      {sortedMovies.length > moviesShown && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
-          <Button 
-            variant="contained" 
-            color="primary" 
-            onClick={loadMoreMovies}
-          >
-            Load More Movies
-          </Button>
-        </Box>
-      )}
+{sortedMovies.length > moviesShown && (
+  <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+    <LoadMoreButton 
+      variant="contained" 
+      onClick={loadMoreMovies}
+    >
+      Load More Movies
+    </LoadMoreButton>
+  </Box>
+)}
       
       {sortedMovies.length > 0 && (
         <Box sx={{ textAlign: 'center', mb: 2 }}>

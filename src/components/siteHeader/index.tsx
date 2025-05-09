@@ -13,6 +13,96 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useAuth } from "../../contexts/authContext";
 
+// Update only the StyledAppBar and StyledToolbar components to adjust height and alignment
+const StyledAppBar = styled(AppBar)(({ theme }) => ({
+  backgroundColor: "#0D0D0D",
+  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.5)",
+  borderBottom: "1px solid #333333",
+  left: "0.47%",
+  width: "99.03%",
+  height: "8%", // Decreased from 10% to 8%
+}));
+
+const StyledToolbar = styled(Toolbar)({
+  padding: "0rem", // Reduced padding
+  minHeight: "56px", // Set a smaller minimum height
+  display: "flex",
+  alignItems: "center", // Ensure vertical centering
+});
+
+// Also update the SiteLogo to ensure it aligns well with the reduced height
+const SiteLogo = styled(Typography)({
+  flexGrow: 1,
+  color: "#FFFFFF",
+  fontWeight: "bold",
+  marginLeft: "20px",
+  letterSpacing: "1px",
+  textShadow: "0 0 10px rgba(229, 9, 20, 0.5)",
+  fontSize: "1.5rem", // Slightly smaller font size
+  "& span": {
+    color: "#E50914",
+  }
+});
+
+
+
+const NavButton = styled(Button)({
+  color: "#FFFFFF",
+  margin: "0 4px",
+  padding: "6px 12px",
+  "&:hover": {
+    backgroundColor: "rgba(229, 9, 20, 0.1)",
+    color: "#E50914",
+  },
+  transition: "all 0.3s ease",
+  textTransform: "none",
+  fontSize: "1rem",
+});
+
+const AuthButton = styled(Button)({
+  color: "#FFFFFF",
+  margin: "0 4px",
+  padding: "6px 16px",
+  border: "1px solid #E50914",
+  "&:hover": {
+    backgroundColor: "#E50914",
+    borderColor: "#E50914",
+  },
+  transition: "all 0.3s ease",
+  textTransform: "none",
+  fontSize: "1rem",
+});
+
+const UserEmail = styled(Typography)({
+  color: "#CCCCCC",
+  margin: "0 12px",
+  fontSize: "0.9rem",
+});
+
+const StyledMenu = styled(Menu)({
+  "& .MuiPaper-root": {
+    backgroundColor: "#0D0D0D",
+    color: "#FFFFFF",
+    border: "1px solid #333333",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.5)",
+  },
+});
+
+const StyledMenuItem = styled(MenuItem)({
+  color: "#FFFFFF",
+  "&:hover": {
+    backgroundColor: "rgba(229, 9, 20, 0.1)",
+    color: "#E50914",
+  },
+});
+
+const MenuButton = styled(IconButton)({
+  color: "#FFFFFF",
+  "&:hover": {
+    backgroundColor: "rgba(229, 9, 20, 0.1)",
+  },
+});
+
 const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 
 const SiteHeader = () => {
@@ -34,7 +124,6 @@ const SiteHeader = () => {
     { label: "Favorites", path: "/movies/favourites" },
     { label: "Playlists", path: "/movies/playlists" },
     { label: "Fantasy Movies", path: "/fantasy-movies" },
-
   ];
 
   const allOptions = isAuthenticated 
@@ -55,24 +144,16 @@ const SiteHeader = () => {
     navigate("/");
   };
 
-  // Create menu items for authentication
-  const authMenuItems = isAuthenticated 
-    ? [<MenuItem key="logout" onClick={handleLogout}>Logout</MenuItem>]
-    : [
-        <MenuItem key="login" onClick={() => handleMenuSelect("/login")}>Login</MenuItem>,
-        <MenuItem key="register" onClick={() => handleMenuSelect("/register")}>Register</MenuItem>
-      ];
-
   return (
     <>
-      <AppBar position="fixed" color="primary">
-        <Toolbar>
-          <Typography variant="h4" sx={{ flexGrow: 1 }}>
-            TMDB Client
-          </Typography>
+      <StyledAppBar position="fixed">
+        <StyledToolbar>
+          <SiteLogo variant="h4">
+            Movie <span>Fest</span>
+          </SiteLogo>
           {isMobile ? (
             <>
-              <IconButton
+              <MenuButton
                 aria-label="menu"
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
@@ -81,8 +162,8 @@ const SiteHeader = () => {
                 size="large"
               >
                 <MenuIcon />
-              </IconButton>
-              <Menu
+              </MenuButton>
+              <StyledMenu
                 id="menu-appbar"
                 anchorEl={anchorEl}
                 anchorOrigin={{
@@ -97,54 +178,57 @@ const SiteHeader = () => {
                 open={open}
                 onClose={() => setAnchorEl(null)}
               >
-                {/* Combine all menu items into a single array */}
-                {[
-                  ...allOptions.map((opt) => (
-                    <MenuItem
-                      key={opt.label}
-                      onClick={() => handleMenuSelect(opt.path)}
-                    >
-                      {opt.label}
-                    </MenuItem>
-                  )),
-                  ...authMenuItems
-                ]}
-              </Menu>
+                {allOptions.map((opt) => (
+                  <StyledMenuItem
+                    key={opt.label}
+                    onClick={() => handleMenuSelect(opt.path)}
+                  >
+                    {opt.label}
+                  </StyledMenuItem>
+                ))}
+                {isAuthenticated ? (
+                  <StyledMenuItem onClick={handleLogout}>Logout</StyledMenuItem>
+                ) : (
+                  <>
+                    <StyledMenuItem onClick={() => handleMenuSelect("/login")}>Login</StyledMenuItem>
+                    <StyledMenuItem onClick={() => handleMenuSelect("/register")}>Register</StyledMenuItem>
+                  </>
+                )}
+              </StyledMenu>
             </>
           ) : (
             <>
               {allOptions.map((opt) => (
-                <Button
+                <NavButton
                   key={opt.label}
-                  color="inherit"
                   onClick={() => handleMenuSelect(opt.path)}
                 >
                   {opt.label}
-                </Button>
+                </NavButton>
               ))}
               {isAuthenticated ? (
                 <>
-                  <Typography variant="body1" sx={{ mx: 2 }}>
+                  <UserEmail variant="body1">
                     {userEmail}
-                  </Typography>
-                  <Button color="inherit" onClick={handleLogout}>
+                  </UserEmail>
+                  <AuthButton onClick={handleLogout}>
                     Logout
-                  </Button>
+                  </AuthButton>
                 </>
               ) : (
                 <>
-                  <Button color="inherit" onClick={() => handleMenuSelect("/login")}>
+                  <AuthButton onClick={() => handleMenuSelect("/login")}>
                     Login
-                  </Button>
-                  <Button color="inherit" onClick={() => handleMenuSelect("/register")}>
+                  </AuthButton>
+                  <AuthButton onClick={() => handleMenuSelect("/register")}>
                     Register
-                  </Button>
+                  </AuthButton>
                 </>
               )}
             </>
           )}
-        </Toolbar>
-      </AppBar>
+        </StyledToolbar>
+      </StyledAppBar>
       <Offset />
     </>
   );
