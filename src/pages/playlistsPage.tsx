@@ -15,7 +15,8 @@ import {
   CircularProgress,
   Box,
   Divider,
-  Alert
+  Alert,
+  styled
 } from "@mui/material";
 import { PlaylistContext } from "../contexts/playlistContext";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +24,57 @@ import { isAuthenticated } from "../utils/auth";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import toast from "../utils/toastService";
+
+// Subtle enhancements for existing components
+const EnhancedCard = styled(Card)({
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.5)",
+  transition: "transform 0.2s ease, box-shadow 0.2s ease",
+  "&:hover": {
+    transform: "translateY(-4px)",
+    boxShadow: "0 8px 16px rgba(0, 0, 0, 0.6)",
+  },
+});
+
+const CardTitle = styled(Typography)({
+  fontWeight: "bold",
+  marginBottom: "0.5rem",
+});
+
+const CardMovieCount = styled(Typography)({
+  color: "#E50914",
+  fontWeight: "bold",
+});
+
+const EnhancedDivider = styled(Divider)({
+  margin: "0.75rem 0",
+  opacity: 0.7,
+});
+
+const ViewButton = styled(Button)({
+  transition: "all 0.2s ease",
+  "&:hover": {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+  },
+});
+
+const DeleteButton = styled(Button)({
+  color: "#E50914",
+  transition: "all 0.2s ease",
+  "&:hover": {
+    backgroundColor: "rgba(229, 9, 20, 0.1)",
+  },
+});
+
+const CreateButton = styled(Button)({
+  backgroundColor: "#E50914",
+  color: "#FFFFFF",
+  "&:hover": {
+    backgroundColor: "#B2070F",
+  },
+});
 
 const PlaylistsPage = () => {
   const { playlists, isLoading, error, loadPlaylists, createNewPlaylist, removePlaylist } = useContext(PlaylistContext);
@@ -84,7 +136,7 @@ const PlaylistsPage = () => {
   if (isLoading && playlists.length === 0) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
-        <CircularProgress />
+        <CircularProgress sx={{ color: "#E50914" }} />
       </Box>
     );
   }
@@ -95,14 +147,14 @@ const PlaylistsPage = () => {
         <Typography variant="h4" component="h1">
           My Playlists
         </Typography>
-        <Button 
+        <CreateButton 
           variant="contained" 
-          color="primary" 
+          color="error" 
           startIcon={<AddIcon />}
           onClick={() => setCreateDialogOpen(true)}
         >
           Create New Playlist
-        </Button>
+        </CreateButton>
       </Box>
 
       {error && (
@@ -119,62 +171,61 @@ const PlaylistsPage = () => {
           justifyContent="center" 
           minHeight="40vh"
           textAlign="center"
+          sx={{ boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)", p: 3, borderRadius: 1 }}
         >
           <Typography variant="h6" gutterBottom>
             You don't have any playlists yet
           </Typography>
           <Typography variant="body1" color="text.secondary" mb={3}>
-            Create your first playlist to start organizing your favorite movies
+            Create your first playlist to start organizing your must watch movies!
           </Typography>
-          <Button 
+          <CreateButton 
             variant="contained" 
-            color="primary" 
+            color="error" 
             startIcon={<AddIcon />}
             onClick={() => setCreateDialogOpen(true)}
           >
             Create Playlist
-          </Button>
+          </CreateButton>
         </Box>
       ) : (
         <Grid container spacing={3}>
           {playlists.map((playlist) => (
             <Grid item xs={12} sm={6} md={4} key={playlist.Id}>
-              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <EnhancedCard sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography variant="h5" component="h2" gutterBottom>
+                  <CardTitle variant="h5">
                     {playlist.Title}
-                  </Typography>
+                  </CardTitle>
                   <Typography variant="body2" color="text.secondary" paragraph>
                     {playlist.Description || "No description"}
                   </Typography>
-                  <Divider sx={{ my: 1 }} />
-                  <Typography variant="body2">
+                  <EnhancedDivider />
+                  <CardMovieCount variant="body2">
                     {playlist.Movies?.length || 0} movies
-                  </Typography>
+                  </CardMovieCount>
                   <Typography variant="caption" color="text.secondary">
                     Created: {new Date(playlist.CreatedDate).toLocaleDateString()}
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <Button 
+                  <ViewButton 
                     size="small" 
                     onClick={() => handleViewPlaylist(playlist.Id)}
                   >
                     View
-                  </Button>
-                  <Button 
+                  </ViewButton>
+                  <DeleteButton 
                     size="small" 
-                    color="error" 
                     startIcon={<DeleteIcon />}
                     onClick={() => handleDeletePlaylist(playlist.Id, playlist.Title)}
                   >
                     Delete
-                  </Button>
+                  </DeleteButton>
                 </CardActions>
-              </Card>
+              </EnhancedCard>
             </Grid>
-          ))}
-        </Grid>
+          ))}        </Grid>
       )}
 
       {/* Create Playlist Dialog */}
@@ -183,6 +234,11 @@ const PlaylistsPage = () => {
         onClose={() => setCreateDialogOpen(false)} 
         maxWidth="sm" 
         fullWidth
+        PaperProps={{
+          sx: {
+            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.2)",
+          }
+        }}
         TransitionProps={{
           onExited: () => {
             // Reset form state when dialog is fully closed
@@ -227,14 +283,14 @@ const PlaylistsPage = () => {
           >
             Cancel
           </Button>
-          <Button 
+          <CreateButton 
             onClick={handleCreatePlaylist} 
             variant="contained" 
-            color="primary"
+            color="error"
             disabled={isSubmitting || !title.trim()}
           >
             {isSubmitting ? <CircularProgress size={24} /> : "Create Playlist"}
-          </Button>
+          </CreateButton>
         </DialogActions>
       </Dialog>
     </Container>
