@@ -78,6 +78,7 @@ const LoginForm: React.FC = () => {
           <Button
             type="submit"
             fullWidth
+            color="error"
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >

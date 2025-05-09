@@ -100,6 +100,7 @@ const RegisterForm: React.FC = () => {
           />
           <Button
             type="submit"
+            color="error"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
