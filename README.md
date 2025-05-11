@@ -12,6 +12,10 @@
 
 MovieFest is a comprehensive movie browsing and management application built with React, TypeScript, and Material UI. The application allows users to explore movies, TV series, and actors from TMDB (The Movie Database), create personalized playlists, manage favorite movies, write reviews, and even create fantasy movies.
 
+## Deployment
+
+The application has been deployed using AWS infrastructure through CDK (Cloud Development Kit). The React-based movie web application is hosted in an S3 bucket as static files, distributed globally via CloudFront CDN for improved performance and security, and made accessible through the custom domain "moviefest.sbs" configured with Route 53 DNS service. The deployment includes SSL certification for HTTPS security.
+
 ## Features
 
 - **Movie Discovery**: Browse popular and upcoming movies with detailed information  
