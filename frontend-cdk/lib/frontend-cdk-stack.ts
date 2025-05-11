@@ -25,15 +25,13 @@ export class FrontendCdkStack extends Stack {
       validation: acm.CertificateValidation.fromDns(hostedZone),
     });
 
-    // Create an S3 bucket for website content
     const siteBucket = new s3.Bucket(this, 'SiteBucket', {
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
-      // Remove websiteIndexDocument and websiteErrorDocument properties
     });
 
-    // Create CloudFront Origin Access Control
+    // Creating CloudFront Origin Access Control
     const oac = new cloudfront.CfnOriginAccessControl(this, 'OAC', {
       originAccessControlConfig: {
         name: 'OAC for S3',
@@ -43,7 +41,7 @@ export class FrontendCdkStack extends Stack {
       }
     });
 
-    // Create a CloudFront distribution
+    // Creating a CloudFront distribution
     const distribution = new cloudfront.Distribution(this, 'SiteDistribution', {
       defaultBehavior: {
         origin: new origins.S3Origin(siteBucket),
@@ -61,12 +59,12 @@ export class FrontendCdkStack extends Stack {
       ],
     });
 
-    // Apply the OAC to the CloudFront distribution
+    // Applying the OAC to the CloudFront distribution
     const cfnDistribution = distribution.node.defaultChild as cloudfront.CfnDistribution;
     cfnDistribution.addPropertyOverride('DistributionConfig.Origins.0.S3OriginConfig.OriginAccessIdentity', '');
     cfnDistribution.addPropertyOverride('DistributionConfig.Origins.0.OriginAccessControlId', oac.attrId);
 
-    // Grant CloudFront access to the S3 bucket
+    // Granting CloudFront access to the S3 bucket
     siteBucket.addToResourcePolicy(
       new iam.PolicyStatement({
         actions: ['s3:GetObject'],
@@ -81,17 +79,17 @@ export class FrontendCdkStack extends Stack {
       })
     );
 
-    // Create a Route53 alias record for the CloudFront distribution
+    // Creating a Route53 alias record for the CloudFront distribution
     new route53.ARecord(this, 'SiteAliasRecord', {
       recordName: domainName,
       target: route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(distribution)),
       zone: hostedZone,
     });
 
-    // Determine the correct path to the frontend build directory
+    // Determining the correct path to the frontend build directory
     const distPath = path.resolve(__dirname, '../../dist');
 
-    // Deploy the website content to the S3 bucket
+    // Deploying the website content to the S3 bucket
     new s3deploy.BucketDeployment(this, 'DeployWithInvalidation', {
       sources: [s3deploy.Source.asset(distPath)],
       destinationBucket: siteBucket,
