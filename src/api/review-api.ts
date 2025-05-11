@@ -9,7 +9,7 @@ export const submitReview = async (movieId: number, review: string, rating: numb
     throw new Error('User not authenticated');
   }
 
-  const response = await fetch(`${API_URL}movies/reviews`, {
+  const response = await fetch(`${API_URL}/movies/reviews`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -31,7 +31,7 @@ export const submitReview = async (movieId: number, review: string, rating: numb
 };
 
 export const getUserReviews = async (userId: string): Promise<any[]> => {
-  const response = await fetch(`${API_URL}movies/reviews?userId=${userId}`);
+  const response = await fetch(`${API_URL}/movies/reviews?userId=${userId}`);
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));

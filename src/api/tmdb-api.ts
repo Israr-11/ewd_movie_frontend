@@ -53,7 +53,7 @@ export const getMovieImages = (id: string | number) => {
     });
 };
 
-export const getMovieReviews = (id: string | number) => { //movie id can be string or number
+export const getMovieReviews = (id: string | number) => { 
   return fetch(
     `https://api.themoviedb.org/3/movie/${id}/reviews?api_key=${import.meta.env.VITE_API_KEY}`
   )

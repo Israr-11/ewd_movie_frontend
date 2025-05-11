@@ -183,7 +183,7 @@ const PlaylistModal: React.FC<PlaylistModalProps> = ({
             <TextField
               margin="dense"
               id="playlist-description"
-              label="Description (optional)"
+              label="Description"
               type="text"
               fullWidth
               variant="outlined"
